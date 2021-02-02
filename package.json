@@ -1,0 +1,16 @@
+{
+  "name": "vulcan-o-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js",
+    "production": "set NODE_ENV=production&&yarn start",
+    "development": "set NODE_ENV=development&&yarn start"
+  }
+}

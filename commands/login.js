@@ -13,6 +13,9 @@ module.exports = {
         }
 
         const uonet = require('../uonet')
+        const Keyv = require("keyv")
+        const keyv = new Keyv(process.env.PATH_TO_DATABASE)
+
         const loginProgressMessage = await message.channel.send("Logowanie... 0%")
         let email = args[0], password = args[1], symbol = args[2], prefix = process.env.PREFIX
 
@@ -26,6 +29,7 @@ module.exports = {
                         `Jedyne co przechowujemy to id twojej wiadomości z danymi :slight_smile:`
                     )
                     console.log(`message id: ${message.id}`)
+                    keyv.set(message.author.id, message.id)
                 }
             })
         else loginProgressMessage.edit(`Nieprawidłowe użycie komendy. Prawidłowe użycie: \`${process.env.PREFIX}${this.usage}\``)

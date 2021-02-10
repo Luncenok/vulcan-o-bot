@@ -4,8 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@keyv/mongo": "^1.1.0",
+    "cheerio": "^1.0.0-rc.5",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
+    "keyv": "^4.0.3",
     "node-fetch": "^2.6.1"
   },
   "scripts": {

@@ -6,6 +6,7 @@ const config = {
   "prefix": process.env.PREFIX,
   "ownerId1": process.env.OWNER1,
   "ownerId2": process.env.OWNER2,
+  "pathToDatabase": process.env.PATH_TO_DATABASE
 }
 client.config = config;
 

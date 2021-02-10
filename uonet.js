@@ -6,7 +6,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
 
     try {
         let ciasteczka = ""
-        let permissions = ""
+        let permissions
 
         let args = await utils.getArgs(loginMessage)
         let email = args[0], password = args[1], symbol = args[2]
@@ -47,7 +47,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
                     throw "Zła nazwa użytkownika lub hasło."
                 }
             })
-        loginProgressMessage.edit('Logowanie... 20%');
+        loginProgressMessage.edit('Logowanie... 25%');
 
         let wa, wctx, wresult, wctxEscaped, wresultEscaped
         let fslsRes = ""
@@ -81,7 +81,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
         wresultEscaped = encodeURIComponent(wresult)
         wctxEscaped = encodeURIComponent(wctx)
 
-        loginProgressMessage.edit('Logowanie... 40%');
+        loginProgressMessage.edit('Logowanie... 50%');
 
         const loginBody = `wa=${wa}&wresult=${wresultEscaped}&wctx=${wctxEscaped}`
         await fetch(wctx, {
@@ -112,7 +112,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
                     throw "Podany identyfikator klienta (symbol) jest niepoprawny."
                 }
             })
-        loginProgressMessage.edit('Logowanie... 60%');
+        loginProgressMessage.edit('Logowanie... 75%');
 
         let startMvcRes = ""
         const startmvcUrl = `https://uonetplus.vulcan.net.pl/${symbol}/Start.mvc/Index`
@@ -132,13 +132,40 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
         permissions = permraw.substr(permraw.search('(permissions: )'), 1000).split("'", 2)[1]
         console.log(`Logged in: user id: ${loginMessage.author.id} permissions length: ${permissions.length} cookies length: ${ciasteczka.length}`)
 
-        loginProgressMessage.edit('Logowanie... 80%');
+        loginProgressMessage.edit('Zalogowano! Pobieranie danych... 0%');
 
-        return [permissions, ciasteczka]
+        return [permissions, ciasteczka, symbol]
     } catch (error) {
         console.log(`!error! user id: ${loginMessage.author.id} error: ${error}`)
         loginProgressMessage.edit(`\`\`\`\n${error}\`\`\``)
-        return [undefined, undefined]
+        return [undefined, undefined, undefined]
     }
 }
 
+module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProgressMessage) => {
+
+    let luckyNumberText = ""
+    let url = `https://uonetplus.vulcan.net.pl/${symbol}/Start.mvc/GetKidsLuckyNumbers`
+    const body = {
+        permissions: permissions
+    }
+    await loginProgressMessage.edit('Pobieranie danych... 50%')
+
+    await fetch(url, {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {
+            'Cookie': cookies,
+            'User-Agent': 'Mozilla/5.0',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        follow: 0,
+        redirect: 'manual'
+    })
+        .then(res => res.text())
+        .then(res => {
+            let lnJson = JSON.parse(res)
+            luckyNumberText = lnJson["data"][0]["Zawartosc"][0]["Zawartosc"][0]["Nazwa"]
+        })
+    return luckyNumberText
+}

@@ -128,17 +128,102 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
             })
 
         $ = cheerio.load(startMvcRes, {xmlMode: false})
+        let baseUrl = $('a[title=Uczeń]').attr('href')
         let permraw = $.html()
         permissions = permraw.substr(permraw.search('(permissions: )'), 1000).split("'", 2)[1]
         console.log(`Logged in: user id: ${loginMessage.author.id} permissions length: ${permissions.length} cookies length: ${ciasteczka.length}`)
 
         loginProgressMessage.edit('Zalogowano! Pobieranie danych... 0%');
 
-        return [permissions, ciasteczka, symbol]
+        return [permissions, ciasteczka, symbol, baseUrl]
     } catch (error) {
         console.log(`!error! user id: ${loginMessage.author.id} error: ${error}`)
         loginProgressMessage.edit(`\`\`\`\n${error}\`\`\``)
-        return [undefined, undefined, undefined]
+        return [undefined, undefined, undefined, undefined]
+    }
+}
+
+module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], loginProgressMessage) => {
+    try {
+        let xvUrl = baseUrl
+        let response = "", resJson
+        await fetch(xvUrl, {
+            method: 'get',
+            headers: {'User-Agent': 'Mozilla/5.0', 'Cookie': cookies},
+            follow: 0,
+            redirect: 'manual'
+        }).then(res => {
+            const raw = res.headers.raw()['set-cookie'];
+            cookies += ';'
+            const cookieString = raw.map((entry) => {
+                const parts = entry.split(';');
+                return parts[0];
+            }).join(';');
+            cookies += cookieString
+        })
+        loginProgressMessage.edit("Pobieranie danych... 25%")
+
+        await fetch(`${baseUrl}/Start`, {
+            method: 'get',
+            headers: {'User-Agent': 'Mozilla/5.0', 'Cookie': cookies},
+            follow: 0,
+            redirect: 'manual'
+        }).then(res => {
+            const raw = res.headers.raw()['set-cookie'];
+            cookies += ';'
+            const cookieString = raw.map((entry) => {
+                const parts = entry.split(';');
+                return parts[0];
+            }).join(';');
+            cookies += cookieString
+
+            return res
+        })
+            .then(res => res.text())
+            .then(res => {
+                response = res
+            })
+        loginProgressMessage.edit("Pobieranie danych... 50%")
+
+        await fetch(`${baseUrl}/UczenDziennik.mvc/Get`, {
+            method: 'get',
+            headers: {'User-Agent': 'Mozilla/5.0', 'Cookie': cookies},
+            follow: 0,
+            redirect: 'manual'
+        }).then(res => {
+            const raw = res.headers.raw()['set-cookie'];
+            cookies += ';'
+            const cookieString = raw.map((entry) => {
+                const parts = entry.split(';');
+                return parts[0];
+            }).join(';');
+            cookies += cookieString
+
+            return res
+        })
+            .then(res => res.text())
+            .then(res => {
+                resJson = JSON.parse(res)
+            })
+        loginProgressMessage.edit("Pobieranie danych... 75%")
+
+        let idBiezacyUczen = resJson["data"][0]["IdUczen"]
+        let idBiezacyDziennik = resJson["data"][0]["IdDziennik"]
+        let rokSzkolny = resJson["data"][0]["DziennikRokSzkolny"]
+
+        let $ = cheerio.load(response, {xmlMode: false})
+        let raw = $.html()
+        let antiForgeryToken = raw.substr(raw.search('(antiForgeryToken: )'), 200).split("'", 2)[1]
+        let appGuid = raw.substr(raw.search('(appGuid: )'), 100).split("'", 2)[1]
+        let version = raw.substr(raw.search('(version: )'), 20).split("'", 2)[1]
+
+        cookies += `;idBiezacyUczen=${idBiezacyUczen};idBiezacyDziennik=${idBiezacyDziennik};biezacyRokSzkolny=${rokSzkolny}`
+
+        return [permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl]
+    } catch (error) {
+        console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
+        loginProgressMessage.edit(`\`\`\`\n${error}\`\`\``)
+        return [undefined, undefined, undefined, undefined]
     }
 }
 
@@ -149,7 +234,6 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProg
     const body = {
         permissions: permissions
     }
-    await loginProgressMessage.edit('Pobieranie danych... 50%')
 
     await fetch(url, {
         method: 'post',
@@ -167,5 +251,51 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProg
             let lnJson = JSON.parse(res)
             luckyNumberText = lnJson["data"][0]["Zawartosc"][0]["Zawartosc"][0]["Nazwa"]
         })
+        .catch(error => {
+            loginProgressMessage.edit(error)
+            throw error
+        })
+    await loginProgressMessage.edit('Pobieranie danych... 50%')
     return luckyNumberText
+}
+
+module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl], day, loginProgressMessage) => {
+
+    let timetableJson
+    let url = `${baseUrl}/PlanZajec.mvc/Get`
+    let data = new Date()
+    data.setDate(day)
+    let dayOfWeek = data.getDay()
+    data = data.toISOString().slice(0, 11) + '00:00:00'
+    const body = {
+        'data': data
+    }
+
+    await fetch(url, {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {
+            'Cookie': cookies,
+            'User-Agent': 'Mozilla/5.0',
+            'Content-Type': 'application/json',
+            'x-requested-with': 'XMLHttpRequest',
+            'x-v-appguid': appGuid,
+            'x-v-appversion': version,
+            'x-v-requestverificationtoken': antiForgeryToken
+        },
+        follow: 0,
+        redirect: 'manual'
+    })
+        .then(res => res.text())
+        .then(res => {
+            let json = JSON.parse(res)
+            timetableJson = json["data"]["Rows"]
+        })
+        .catch(error => {
+            loginProgressMessage.edit(error)
+            throw error
+        })
+
+    await loginProgressMessage.edit('Pobieranie danych... 99%')
+    return utils.getTimetableFormattedText(timetableJson, dayOfWeek)
 }

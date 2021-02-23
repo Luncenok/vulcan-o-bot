@@ -102,7 +102,7 @@ module.exports = {
     aliases: ['/', 'h', 'commands', 'komendy', 'pomoc'], // zdecydowałem, by użyć aliasu '/', bo wiadomość typu '??' może się często pojawiać bez chęci, by otrzymać helpa
     usage: 'help [komenda]',
     category: 'other',
-    async execute(client, message) {
+    async execute(client, message, args) {
         const fs = require('fs');
         const files = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
         let commands = [];
@@ -129,13 +129,14 @@ module.exports = {
             }
         })
 
-        if (!(message.content.split(' ')[1])) {
+        if (!(args[0])) {
             console.log("pomoc do bota");
         }
         else {
-            console.log("pomoc do komendy", message.content.split(' ')[1]);
+            console.log("pomoc do komendy", args[0]);
         }
 
-        const helpEmbed = (!(message.content.split(' ')[1])) ? {} : {}
+        const helpEmbed = (!(args[0])) ? {} : {}
+        message.channel.send(helpEmbed);
     }
 }

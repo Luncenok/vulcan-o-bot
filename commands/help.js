@@ -1,104 +1,6 @@
-/* HELP Z PRZYJAIELA
 module.exports = {
     name: "help",
-    description: "Pokazuje tę wiadomość",
-    aliases: ['pomoc', '?', 'commands'],
-    usage: 'help [komenda]',
-    category: 'other',
-    execute(client, message, args) {
-        const fs = require('fs')
-        let komenda, listaKomend = []
-        fs.readdir("./commands", (err, files) => {
-            if (err) return console.error(err);
-            files.forEach(file => {
-                if (!file.endsWith(".js")) return;
-                let commandName = file.split(".")[0];
-                let command = client.commands.get(commandName)
-                    || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-                listaKomend.push(command)
-                if (command.name === args[0]) {
-                    komenda = command
-                }
-                command.aliases.forEach(function (item) {
-                    if (item === args[0]) {
-                        komenda = command
-                    }
-                })
-            });
-            let komendyVulcan = [], komendyZabawa = [], komendyInne = []
-            listaKomend.forEach(function (item) {
-                if (item.category === 'vulcan') komendyVulcan.push(item.name)
-                else if (item.category === 'fun') komendyZabawa.push(item.name)
-                else if (item.category === 'other') komendyInne.push(item.name)
-            })
-
-            const exampleEmbed = (args.length<1) ? {
-                color: 0x28166f,
-                title: 'Pomoc',
-                author: {
-                    name: 'Przyjaciel z ZSK',
-                    icon_url: 'https://www.zsk.poznan.pl/wp-content/uploads/2019/05/cropped-m_logo-192x192.png',
-                },
-                description: 'Poniżej znajdują się przydatne linki oraz komendy do bota',
-                fields: [
-                    {
-                        name: 'Zaproszenie',
-                        value: 'https://discord.com/api/oauth2/authorize?client_id=651399623646380062&permissions=8&scope=bot',
-                    },
-                    {
-                        name: 'Lista dostępnych komend',
-                        value: "***Vulcan:*** " + komendyVulcan.join(", ") + "\n***Zabawne:*** " + komendyZabawa.join(", ") + "\n***Inne:*** " + komendyInne.join(", ") + "\nAby uzyskać więcej informacji o komendzie wpisz: `" + client.config.prefix + "help [komenda]`",
-                        inline: false,
-                    },
-                    {
-                        name: 'Pomoc',
-                        value: 'Coś nie działa w bocie i nie wiesz jak sobie z tym poradzić? Dołącz do serwera poniżej aby skontaktować się z developerem bota',
-                        inline: false,
-                    },
-                    {
-                        name: 'Oficjalny serwer',
-                        value: 'No tutaj ogólnie kiedyś będzie linczek do sewera',
-                        inline: false,
-                    },
-                ],
-                timestamp: new Date(),
-                footer: {
-                    text: 'Przyjaciel z ZSK',
-                    icon_url: 'https://www.zsk.poznan.pl/wp-content/uploads/2019/05/cropped-m_logo-192x192.png',
-                },
-            } : {
-                color: 0x28166f,
-                title: komenda.name,
-                author: {
-                    name: 'Przyjaciel z ZSK',
-                    icon_url: 'https://www.zsk.poznan.pl/wp-content/uploads/2019/05/cropped-m_logo-192x192.png',
-                },
-                description: 'Jak używać tej komendy?',
-                fields: [
-                    {
-                        name: 'Użycie',
-                        value: "`" + client.config.prefix + komenda.usage + "`",
-                    },
-                    {
-                        name: 'Co robi ta komenda?',
-                        value: komenda.description || "(brak opisu)"
-                    },
-                    {
-                        name: 'Aliasy',
-                        value: komenda.aliases.toString()
-                    }
-                ],
-            }
-            message.channel.send({embed: exampleEmbed});
-        });
-    }
-}
-*/
-
-
-module.exports = {
-    name: "help",
-    description: "Podaje pomocną dłoń wypełnioną niepotrzebnymi, ale ważnymi informacjami na temat komendy (sam użyłes tej komendy przed chwilą, więc wiesz co ona robi tho...)",
+    description: "Podaje pomocną dłoń wypełnioną niepotrzebnymi, ale ważnymi informacjami na temat komendy (sam przed chwilą użyłes tej komendy, więc wiesz co ona robi hmm...)",
     aliases: ['/', 'h', 'commands', 'komendy', 'pomoc'], // zdecydowałem, by użyć aliasu '/', bo wiadomość typu '??' może się często pojawiać bez chęci, by otrzymać helpa
     usage: 'help [komenda]',
     category: 'other',
@@ -116,7 +18,7 @@ module.exports = {
         let comsOtherNames = []
         let comsVulcanNames = []
         commands.forEach(command => {
-            switch(command.category) {
+            switch(command.category) { // tu kiedyś (hmm) będzie inaczej. Bedzie automatyczny system tworzenia kategorii, że jak stworzysz se nową komdę kategorii "Moderacja", czy coś, to nie będziesz musiał nic w helpie zmieniać
                 case "other":
                     comsOtherNames.push(command.name);
                     break;
@@ -124,19 +26,70 @@ module.exports = {
                     comsVulcanNames.push(command.name);
                     break;
                 default:
-                    console.log("Unknow command", command.name, '\n', command);
+                    console.log("Unknow command category", command.category, "\n for command:", command);
                     break;
             }
         })
+        
+        let helpCommand = client.commands.get(args[0])
+                || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 
-        if (!(args[0])) {
-            console.log("pomoc do bota");
+        if (!(helpCommand)&&(args[0])) { // tu sprawdzam, czy ktoś nie chciał sprawdzić komendy, która nie istnieje
+            message.channel.send("Nieznana komenda `"+args[0]+"`.\nWpisz `"+ process.env.PREFIX +"help`, by otrzymać listę komend i przydatne linki")
+        } else {
+            const helpEmbed = (!(helpCommand)) ? { //  emded help dla całego bota
+                color: 0xd6d6d6,
+                title: "Pomoc",
+                author: {
+                    name: "Vulcan'o'bot",
+                    icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
+                },
+                description: "Pomoc do bota oraz przydatne linki",
+                fields: [
+                    {
+                        name: "Zaproszenie",
+                        value: "https://discord.com/api/oauth2/authorize?client_id=649280115565395998&permissions=388160&scope=bot"
+                    }, {
+                        name: "Lista komend",
+                        value: "***Vulcan:*** " + comsVulcanNames.join(", ") + "\n***Inne:*** " + comsOtherNames.join(", ") + "\nAby uzyskać więcej informacji o komendzie wpisz: `"+process.env.PREFIX+"help [komenda]`",
+                        inline: false
+                    }, {
+                        name: "Kontakt",
+                        value: "Luncenok <@"+process.env.OWNER1+">\nKasza <@"+process.env.OWNER2+'>'
+                    }
+                ],
+                timestamp: new Date(),
+                footer: {
+                    text: "Vulcan'o'bot",
+                    icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
+                }
+            } : { // embed help dla komendy
+                color: 0xd6d6d6,
+                title: helpCommand.name,
+                author: {
+                    name: "Vulcan'o'bot",
+                    icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
+                },
+                description: "Jak używać tej komendy?",
+                fields: [
+                    {
+                        name: "Użycie",
+                        value: "`" + process.env.PREFIX + helpCommand.usage + "`",
+                    }, {
+                        name: 'Co robi ta komenda?',
+                        value: helpCommand.description || "(brak opisu)"
+                    }, {
+                        name: 'Aliasy',
+                        value: helpCommand.aliases.join(", ")
+                    }
+                ],
+                timestamp: new Date(),
+                footer: {
+                    text: "Vulcan'o'bot",
+                    icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
+                }
+            }
+            message.channel.send({embed: helpEmbed});
         }
-        else {
-            console.log("pomoc do komendy", args[0]);
-        }
-
-        const helpEmbed = (!(args[0])) ? {} : {}
-        message.channel.send(helpEmbed);
     }
 }

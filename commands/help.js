@@ -98,17 +98,44 @@ module.exports = {
 
 module.exports = {
     name: "help",
-    description: "Podaje pomocną dłoń wypełnioną niepotrzebnymi, ale ważnymi informacjami",
+    description: "Podaje pomocną dłoń wypełnioną niepotrzebnymi, ale ważnymi informacjami na temat komendy (sam użyłes tej komendy przed chwilą, więc wiesz co ona robi tho...)",
     aliases: ['/', 'h', 'commands', 'komendy', 'pomoc'], // zdecydowałem, by użyć aliasu '/', bo wiadomość typu '??' może się często pojawiać bez chęci, by otrzymać helpa
     usage: 'help [komenda]',
     category: 'other',
     async execute(client, message) {
         const fs = require('fs');
         const files = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-        let commands = []
-
+        let commands = [];
         files.forEach(file => {
-            commands.append(require(`./commands/${file}`));
-        });
+            comName = file.split(".")[0];
+            let command = client.commands.get(comName)
+                || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(comName));
+            commands.push(command);
+        })
+        // console.log(commands);
+        let comsOtherNames = []
+        let comsVulcanNames = []
+        commands.forEach(command => {
+            switch(command.category) {
+                case "other":
+                    comsOtherNames.push(command.name);
+                    break;
+                case "vulcan":
+                    comsVulcanNames.push(command.name);
+                    break;
+                default:
+                    console.log("Unknow command", command.name, '\n', command);
+                    break;
+            }
+        })
+
+        if (!(message.content.split(' ')[1])) {
+            console.log("pomoc do bota");
+        }
+        else {
+            console.log("pomoc do komendy", message.content.split(' ')[1]);
+        }
+
+        const helpEmbed = (!(message.content.split(' ')[1])) ? {} : {}
     }
 }

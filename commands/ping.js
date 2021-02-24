@@ -11,5 +11,6 @@ module.exports = {
         const ping = Math.round(checkmessage.createdTimestamp - message.createdTimestamp)
         if (commandName === 'pong') await checkmessage.edit(`Ping? ${ping}ms`)
         else await checkmessage.edit(`Pong! ${ping}ms`)
+        console.log(ping)
     }
 }

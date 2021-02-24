@@ -1,7 +1,7 @@
 module.exports = {
     name: "help",
     description: "Podaje pomocną dłoń wypełnioną niepotrzebnymi, ale ważnymi informacjami na temat komendy (sam przed chwilą użyłes tej komendy, więc wiesz co ona robi hmm...)",
-    aliases: ['/', 'h', 'commands', 'komendy', 'pomoc'], // zdecydowałem, by użyć aliasu '/', bo wiadomość typu '??' może się często pojawiać bez chęci, by otrzymać helpa
+    aliases: ['/', 'h', 'commands', 'komendy', 'pomoc'], 
     usage: 'help [komenda]',
     category: 'other',
     async execute(client, message, args) {
@@ -14,7 +14,6 @@ module.exports = {
                 || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(comName));
             commands.push(command);
         })
-        // console.log(commands);
         let comsOtherNames = []
         let comsVulcanNames = []
         commands.forEach(command => {
@@ -34,10 +33,10 @@ module.exports = {
         let helpCommand = client.commands.get(args[0])
                 || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 
-        if (!(helpCommand)&&(args[0])) { // tu sprawdzam, czy ktoś nie chciał sprawdzić komendy, która nie istnieje
+        if (!(helpCommand)&&(args[0])) {
             message.channel.send("Nieznana komenda `"+args[0]+"`.\nWpisz `"+ process.env.PREFIX +"help`, by otrzymać listę komend i przydatne linki")
         } else {
-            const helpEmbed = (!(helpCommand)) ? { //  emded help dla całego bota
+            const helpEmbed = (!(helpCommand)) ? {
                 color: 0xd6d6d6,
                 title: "Pomoc",
                 author: {
@@ -63,7 +62,7 @@ module.exports = {
                     text: "Vulcan'o'bot",
                     icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
                 }
-            } : { // embed help dla komendy
+            } : {
                 color: 0xd6d6d6,
                 title: helpCommand.name,
                 author: {

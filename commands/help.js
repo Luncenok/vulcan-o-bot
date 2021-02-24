@@ -34,7 +34,7 @@ module.exports = {
                 || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 
         if (!(helpCommand)&&(args[0])) {
-            message.channel.send("Nieznana komenda `"+args[0]+"`.\nWpisz `"+ process.env.PREFIX +"help`, by otrzymać listę komend i przydatne linki")
+            message.channel.send("Nieznana komenda `"+args[0]+"`.\nWpisz `"+ client.config.prefix +"help`, by otrzymać listę komend i przydatne linki")
         } else {
             const helpEmbed = (!(helpCommand)) ? {
                 color: 0xd6d6d6,
@@ -50,7 +50,7 @@ module.exports = {
                         value: "https://discord.com/api/oauth2/authorize?client_id=649280115565395998&permissions=388160&scope=bot"
                     }, {
                         name: "Lista komend",
-                        value: "***Vulcan:*** " + comsVulcanNames.join(", ") + "\n***Inne:*** " + comsOtherNames.join(", ") + "\nAby uzyskać więcej informacji o komendzie wpisz: `"+process.env.PREFIX+"help [komenda]`",
+                        value: "***Vulcan:*** " + comsVulcanNames.join(", ") + "\n***Inne:*** " + comsOtherNames.join(", ") + "\nAby uzyskać więcej informacji o komendzie wpisz: `"+client.config.prefix+"help [komenda]`",
                         inline: false
                     }, {
                         name: "Kontakt",
@@ -73,7 +73,7 @@ module.exports = {
                 fields: [
                     {
                         name: "Użycie",
-                        value: "`" + process.env.PREFIX + helpCommand.usage + "`",
+                        value: "`" + client.config.prefix + helpCommand.usage + "`",
                     }, {
                         name: 'Co robi ta komenda?',
                         value: helpCommand.description || "(brak opisu)"

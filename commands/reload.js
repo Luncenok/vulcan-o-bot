@@ -2,7 +2,7 @@ module.exports = {
     name: "reload",
     description: "Ponownie wczytuje wszystkie komendy|komende",
     aliases: ['renew', 'f5'],
-    usage: 'relaod [komenda]',
+    usage: 'reload [komenda]',
     category: 'dev',
     async execute(client, message, args) {
         const fs = require('fs');

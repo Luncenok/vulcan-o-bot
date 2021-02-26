@@ -219,7 +219,7 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
 
         cookies += `;idBiezacyUczen=${idBiezacyUczen};idBiezacyDziennik=${idBiezacyDziennik};biezacyRokSzkolny=${rokSzkolny}`
 
-        return [permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl]
+        return [permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny]
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
         loginProgressMessage.edit(`\`\`\`\n${error}\`\`\``)
@@ -298,4 +298,45 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
     return utils.getTimetableFormattedText(timetableJson, dayOfWeek)
+}
+
+module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
+
+    let examsJson
+    let url = `${baseUrl}/Sprawdziany.mvc/Get`
+    let data = new Date()
+    data.setDate(day)
+    data = data.toISOString().slice(0, 11) + '00:00:00'
+    const body = {
+        'data': data,
+        'rokSzkolny': rokSzkolny
+    }
+
+    await fetch(url, {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {
+            'Cookie': cookies,
+            'User-Agent': 'Mozilla/5.0',
+            'Content-Type': 'application/json',
+            'x-requested-with': 'XMLHttpRequest',
+            'x-v-appguid': appGuid,
+            'x-v-appversion': version,
+            'x-v-requestverificationtoken': antiForgeryToken
+        },
+        follow: 0,
+        redirect: 'manual'
+    })
+        .then(res => res.text())
+        .then(res => {
+            let json = JSON.parse(res)
+            examsJson = json["data"]
+        })
+        .catch(error => {
+            loginProgressMessage.edit(error)
+            throw error
+        })
+
+    await loginProgressMessage.edit('Pobieranie danych... 99%')
+    return utils.getExamsFormattedText(examsJson)
 }

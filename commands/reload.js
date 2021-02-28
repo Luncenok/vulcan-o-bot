@@ -15,7 +15,7 @@ module.exports = {
                     client.commands.delete(commandName);
                     let command = require(`./${commandName}.js`);
                     client.commands.set(commandName, command);
-                    console.log(`Succesfully reloaded command ${command.name}`);
+                    console.log(`Successfully reloaded command ${command.name}`);
                 } catch (err) {
                     console.error(err);
                 }

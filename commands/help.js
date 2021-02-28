@@ -6,6 +6,7 @@ module.exports = {
     category: 'other',
     async execute(client, message, args) {
         const fs = require('fs');
+        const utils = require('../utils');
         const files = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
         let commands = [];
         files.forEach(file => {
@@ -36,15 +37,10 @@ module.exports = {
         if (!(helpCommand)&&(args[0])) {
             message.channel.send("Nieznana komenda `"+args[0]+"`.\nWpisz `"+ client.config.prefix +"help`, by otrzymać listę komend i przydatne linki")
         } else {
-            const helpEmbed = (!(helpCommand)) ? {
-                color: 0xd6d6d6,
-                title: "Pomoc",
-                author: {
-                    name: "Vulcan'o'bot",
-                    icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
-                },
-                description: "Pomoc do bota oraz przydatne linki",
-                fields: [
+            const helpEmbed = (!(helpCommand)) ? utils.generateEmbed(
+                'Pomoc',
+                'Pomoc do bota oraz przydatne linki',
+                [
                     {
                         name: "Zaproszenie",
                         value: "https://discord.com/api/oauth2/authorize?client_id=649280115565395998&permissions=388160&scope=bot"
@@ -56,21 +52,11 @@ module.exports = {
                         name: "Kontakt",
                         value: "Luncenok <@"+process.env.OWNER1+">\nKasza <@"+process.env.OWNER2+'>'
                     }
-                ],
-                timestamp: new Date(),
-                footer: {
-                    text: "Vulcan'o'bot",
-                    icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
-                }
-            } : {
-                color: 0xd6d6d6,
-                title: helpCommand.name,
-                author: {
-                    name: "Vulcan'o'bot",
-                    icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
-                },
-                description: "Jak używać tej komendy?",
-                fields: [
+                ]
+            ) : utils.generateEmbed(
+                helpCommand.name,
+                "Jak używać tej komendy?",
+                [
                     {
                         name: "Użycie",
                         value: "`" + client.config.prefix + helpCommand.usage + "`",
@@ -81,14 +67,10 @@ module.exports = {
                         name: 'Aliasy',
                         value: helpCommand.aliases.join(", ")
                     }
-                ],
-                timestamp: new Date(),
-                footer: {
-                    text: "Vulcan'o'bot",
-                    icon_url: "https://s1.qwant.com/thumbr/0x380/0/5/5391fa8d72b7814188fd706773e8b335d12cb9505b3774e70eb952cd4a4a79/vector-volcano-eruption-illustration.jpg?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F216%2F030%2Foriginal%2Fvector-volcano-eruption-illustration.jpg&q=0&b=1&p=0&a=1"
-                }
-            }
-            message.channel.send({embed: helpEmbed});
+                ]
+            )
+            console.log(typeof(helpCommand))
+            message.channel.send(helpEmbed);
         }
     }
 }

@@ -69,7 +69,6 @@ module.exports = {
                     }
                 ]
             )
-            console.log(typeof(helpCommand))
             message.channel.send(helpEmbed);
         }
     }

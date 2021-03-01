@@ -32,7 +32,7 @@ module.exports.removeFromDatabase = async (userId) => {
     await keyv.delete(userId)
 }
 
-module.exports.getDayOfWeek = (day) => {
+module.exports.getDateFromText = (day) => {
     let dateDay = new Date().getDate()
     switch (day) {
         case "dzisiaj":
@@ -98,4 +98,45 @@ module.exports.generateEmbed = (title, description, fields) => {
      * @returns {Discord.MessageEmbed} Ready to send embed
      */
     return {embed: Embed}
+
+module.exports.getExamsFormattedText = (json) => {
+    let examsText = ""
+    json.forEach(tydzien => {
+        tydzien["SprawdzianyGroupedByDayList"].forEach(day => {
+            if (day["Sprawdziany"].length > 0) {
+                examsText += `${day["Data"].split(' ')[0]}:\n`
+                day["Sprawdziany"].forEach(sprawdzian => {
+                    let rodzaj;
+                    switch (sprawdzian["Rodzaj"]) {
+                        case 1:
+                            rodzaj = "Sprawdzian"
+                            break
+                        case 2:
+                            rodzaj = "Kartkówka"
+                            break
+                        case 3:
+                            rodzaj = "Praca klasowa"
+                            break
+                        default:
+                            rodzaj = "inne"
+                            break
+                    }
+                    if (sprawdzian["Opis"] === "") sprawdzian["Opis"] = "(brak opisu)"
+
+                    let testString = examsText + `${sprawdzian["DisplayValue"]}\n` +
+                        `${sprawdzian["PracownikModyfikujacyDisplay"]}\n` +
+                        `${sprawdzian["Opis"]}\n` +
+                        `${rodzaj}\n\n`
+                    if (testString.length < 2000)
+                        examsText += `${sprawdzian["DisplayValue"]}\n` +
+                            `${sprawdzian["PracownikModyfikujacyDisplay"]}\n` +
+                            `${sprawdzian["Opis"]}\n` +
+                            `${rodzaj}\n\n`
+                })
+            } else {
+                examsText = "Brak sprawdzianów!"
+            }
+        })
+    })
+    return examsText
 }

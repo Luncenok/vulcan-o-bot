@@ -53,13 +53,13 @@ module.exports.getTimetableFormattedText = (json, dayOfWeek) => {
             hoursString = hoursSplitted.join("\t")
             timetableText += hoursString + "\t"
         }
-        let $
-        try {
-            $ = cheerio.load(lesson[dayOfWeek], {xmlMode: false})
-        } catch (e) {
+
+        if (lesson[dayOfWeek] === undefined) {
             timetableText = 'Brak lekcji tego dnia!'
             return
         }
+
+        let $ = cheerio.load(lesson[dayOfWeek], {xmlMode: false})
         let psalaSplitted = $.text().split("     ")
         if (psalaSplitted.length < 2)
             psalaSplitted = $.text().split("    ")

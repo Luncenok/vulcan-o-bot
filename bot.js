@@ -26,8 +26,10 @@ client.commands = new Discord.Collection();
 const files = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 files.forEach(file => {
   let command = require(`./commands/${file}`);
-  console.log(`Attempting to load command ${command.name}`);
-  client.commands.set(command.name, command);
+  if ((process.env.NODE_ENV === "production" && !(command.category === "develop")) || process.env.NODE_ENV === 'development') {
+    console.log(`Attempting to load command ${command.name}`);
+    client.commands.set(command.name, command);
+  }
 });
 
 client.login();

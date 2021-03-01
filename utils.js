@@ -84,6 +84,9 @@ module.exports.getExamsFormattedText = (json) => {
                         case 2:
                             rodzaj = "Kartkówka"
                             break
+                        case 3:
+                            rodzaj = "Praca klasowa"
+                            break
                         default:
                             rodzaj = "inne"
                             break
@@ -100,6 +103,8 @@ module.exports.getExamsFormattedText = (json) => {
                             `${sprawdzian["Opis"]}\n` +
                             `${rodzaj}\n\n`
                 })
+            } else {
+                examsText = "Brak sprawdzianów!"
             }
         })
     })

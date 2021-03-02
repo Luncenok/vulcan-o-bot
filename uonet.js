@@ -339,5 +339,6 @@ module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken
         })
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
-    return utils.getExamsFormattedText(examsJson)
+    console.log(examsJson);
+    return examsJson
 }

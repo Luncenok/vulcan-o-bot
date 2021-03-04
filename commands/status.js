@@ -7,6 +7,7 @@ module.exports = {
     async execute(client, message) {
         const fetch = require('node-fetch')
         const cheerio = require('cheerio')
+        const utils = require('../utils')
         const checkMessage = await message.channel.send('Sprawdzanie...');
 
         let
@@ -14,11 +15,12 @@ module.exports = {
             isCufsCodeCorrect = false,
             isCufsTextCorrect = false,
             isCufsPrzerwa = false,
+            cufsError = undefined,
             isUczenTextCorrect = false,
             isUczenCodeCorrect = false,
             isUczenTitleCorrect = false,
             isUczenPrzerwa = false,
-            messageText = "\`\`\`Status dzienniczka vulcan.net.pl dla symbolu warszawa:\n\n"
+            uczenError = undefined
 
         await fetch('https://uonetplus.vulcan.net.pl/warszawa')
             .then(res => {
@@ -35,6 +37,7 @@ module.exports = {
             })
             .catch(error => {
                 console.log(error)
+                cufsError = error.message
             })
 
         await fetch('https://uonetplus-uczen.vulcan.net.pl/warszawa')
@@ -52,21 +55,37 @@ module.exports = {
             })
             .catch(error => {
                 console.log(error)
+                uczenError = error.message
             })
 
-        messageText +=
-            (isCufsCodeCorrect && isCufsTextCorrect && isCufsTitleCorrect) ? `Strona logowania działa poprawnie\n` : `Wykryto błąd strony logowania:\n` +
-                `Kod?: ${isCufsCodeCorrect}\n` +
-                `Tytuł?: ${isCufsTitleCorrect}\n` +
-                `Przerwa techniczna?: ${isCufsPrzerwa}\n` +
-                `Tekst?" ${isCufsTextCorrect}\n\n`
-
-        messageText +=
-            (isUczenCodeCorrect && isUczenTextCorrect && isUczenTitleCorrect) ? `"Nowy Uczeń" działa poprawnie\n\`\`\`` : `Wykryto błąd w "Nowy Uczeń":\n` +
-                `Kod?: ${isUczenCodeCorrect}\n` +
-                `Tytuł?: ${isUczenTitleCorrect}\n` +
-                `Przerwa techniczna?: ${isUczenPrzerwa}\n` +
-                `Tekst?: ${isUczenTextCorrect}\n\`\`\``
-        checkMessage.edit(messageText)
+        const embed = utils.generateEmbed(
+            "Status dzienniczka vulcan.net.pl",
+            "Status dzienniczka vulcan.net.pl dla symbolu warszawa",
+            [{
+                name: (isCufsCodeCorrect && isCufsTextCorrect && isCufsTitleCorrect)
+                    ? "Strona logowania działa poprawnie"
+                    : "Wykryto błąd strony logowania:",
+                value: (isCufsCodeCorrect && isCufsTextCorrect && isCufsTitleCorrect)
+                    ? ":ok_hand:"
+                    : `Kod?: ${isCufsCodeCorrect ? ":white_check_mark:" : ":x:"}\n` +
+                    `Tytuł?: ${isCufsTitleCorrect ? ":white_check_mark:" : ":x:"}\n` +
+                    `Tekst?" ${isCufsTextCorrect ? ":white_check_mark:" : ":x:"}\n` +
+                    `Przerwa techniczna?: ${isCufsPrzerwa ? ":white_check_mark:" : ":x:"}\n` +
+                    `Error?" ${cufsError ? cufsError : ":x:"}`
+            }, {
+                name: (isUczenCodeCorrect && isUczenTextCorrect && isUczenTitleCorrect)
+                    ? "Nowy Uczeń działa poprawnie\n"
+                    : "Wykryto błąd w Nowym Uczniu:\n",
+                value: (isUczenCodeCorrect && isUczenTextCorrect && isUczenTitleCorrect)
+                    ? ":ok_hand:"
+                    : `Kod?: ${isUczenCodeCorrect ? ":white_check_mark:" : ":x:"}\n` +
+                    `Tytuł?: ${isUczenTitleCorrect ? ":white_check_mark:" : ":x:"}\n` +
+                    `Tekst?: ${isUczenTextCorrect ? ":white_check_mark:" : ":x:"}\n` +
+                    `Przerwa techniczna?: ${isUczenPrzerwa ? ":white_check_mark:" : ":x:"}\n` +
+                    `Error?: ${uczenError ? "\`uczenError\`" : ":x:"}`
+            }]
+        )
+        checkMessage.edit("_")
+        checkMessage.edit(embed)
     }
 }

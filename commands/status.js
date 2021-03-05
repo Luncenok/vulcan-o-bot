@@ -8,8 +8,7 @@ module.exports = {
         const fetch = require('node-fetch')
         const cheerio = require('cheerio')
         const utils = require('../utils')
-        const checkMessage = await message.channel.send('Sprawdzanie...');
-
+        message.channel.startTyping()
         let
             isCufsTitleCorrect = false,
             isCufsCodeCorrect = false,
@@ -58,34 +57,36 @@ module.exports = {
                 uczenError = error.message
             })
 
+        let cufsWorking = (isCufsCodeCorrect && isCufsTextCorrect && isCufsTitleCorrect),
+            uczenWorking = (isUczenCodeCorrect && isUczenTextCorrect && isUczenTitleCorrect)
+
         const embed = utils.generateEmbed(
             "Status dzienniczka vulcan.net.pl",
             "Status dzienniczka vulcan.net.pl dla symbolu warszawa",
             [{
-                name: (isCufsCodeCorrect && isCufsTextCorrect && isCufsTitleCorrect)
-                    ? "Strona logowania działa poprawnie"
-                    : "Wykryto błąd strony logowania:",
-                value: (isCufsCodeCorrect && isCufsTextCorrect && isCufsTitleCorrect)
-                    ? ":ok_hand:"
-                    : `Kod?: ${isCufsCodeCorrect ? ":white_check_mark:" : ":x:"}\n` +
+                name: cufsWorking ? "Strona logowania działa poprawnie" :
+                    "Wykryto błąd strony logowania:",
+                value: cufsWorking ? ":ok_hand:" :
+                    `Kod?: ${isCufsCodeCorrect ? ":white_check_mark:" : ":x:"}\n` +
                     `Tytuł?: ${isCufsTitleCorrect ? ":white_check_mark:" : ":x:"}\n` +
                     `Tekst?" ${isCufsTextCorrect ? ":white_check_mark:" : ":x:"}\n` +
                     `Przerwa techniczna?: ${isCufsPrzerwa ? ":white_check_mark:" : ":x:"}\n` +
                     `Error?" ${cufsError ? cufsError : ":x:"}`
             }, {
-                name: (isUczenCodeCorrect && isUczenTextCorrect && isUczenTitleCorrect)
-                    ? "Nowy Uczeń działa poprawnie\n"
-                    : "Wykryto błąd w Nowym Uczniu:\n",
-                value: (isUczenCodeCorrect && isUczenTextCorrect && isUczenTitleCorrect)
-                    ? ":ok_hand:"
-                    : `Kod?: ${isUczenCodeCorrect ? ":white_check_mark:" : ":x:"}\n` +
+                name: uczenWorking ? "Nowy Uczeń działa poprawnie\n" : "Wykryto błąd w Nowym Uczniu:\n",
+                value: uczenWorking ? ":ok_hand:" :
+                    `Kod?: ${isUczenCodeCorrect ? ":white_check_mark:" : ":x:"}\n` +
                     `Tytuł?: ${isUczenTitleCorrect ? ":white_check_mark:" : ":x:"}\n` +
                     `Tekst?: ${isUczenTextCorrect ? ":white_check_mark:" : ":x:"}\n` +
                     `Przerwa techniczna?: ${isUczenPrzerwa ? ":white_check_mark:" : ":x:"}\n` +
                     `Error?: ${uczenError ? "\`uczenError\`" : ":x:"}`
             }]
         )
-        checkMessage.edit("_")
-        checkMessage.edit(embed)
+
+        if (cufsWorking && uczenWorking)
+            embed.embed.color = "#9cfc9c"
+        else embed.embed.color = "#e73f48"
+        message.channel.stopTyping()
+        await message.channel.send(embed)
     }
 }

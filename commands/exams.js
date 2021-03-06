@@ -1,46 +1,3 @@
-/*
-    json = shgiodfdj
-    let examsText = ""
-    json.forEach(tydzien => {
-        tydzien["SprawdzianyGroupedByDayList"].forEach(day => {
-            if (day["Sprawdziany"].length > 0) {
-                examsText += `${day["Data"].split(' ')[0]}:\n`
-                day["Sprawdziany"].forEach(sprawdzian => {
-                    let rodzaj;
-                    switch (sprawdzian["Rodzaj"]) {
-                        case 1:
-                            rodzaj = "Sprawdzian"
-                            break
-                        case 2:
-                            rodzaj = "Kartkówka"
-                            break
-                        case 3:
-                            rodzaj = "Praca klasowa"
-                            break
-                        default:
-                            rodzaj = "inne"
-                            break
-                    }
-                    if (sprawdzian["Opis"] === "") sprawdzian["Opis"] = "(brak opisu)"
-
-                    let testString = examsText + `${sprawdzian["DisplayValue"]}\n` +
-                        `${sprawdzian["PracownikModyfikujacyDisplay"]}\n` +
-                        `${sprawdzian["Opis"]}\n` +
-                        `${rodzaj}\n\n`
-                    if (testString.length < 2000)
-                        examsText += `${sprawdzian["DisplayValue"]}\n` +
-                            `${sprawdzian["PracownikModyfikujacyDisplay"]}\n` +
-                            `${sprawdzian["Opis"]}\n` +
-                            `${rodzaj}\n\n`
-                })
-            }
-        })
-    })
-    if (examsText === "") examsText = "Brak sprawdzianów"
-    return examsText
-}
-*/
-
 module.exports = {
     name: "exams",
     description: "Pokazuje sprawdziany na następne 4 tygodnie lub mniej jeżeli przekroczy limit 2000 znaków)",
@@ -86,7 +43,7 @@ module.exports = {
                         })
                     })
                 };
-                loginProgressMessage.delete(); // DLACZEGO TO NIE DZIAŁA
+                loginProgressMessage.delete();
                 message.channel.send(utils.generateEmbed(
                     "Sprawdziany",
                     "Sprawdziany, kartkówki i prace klasowe na najbliższe 4 tygodnie",

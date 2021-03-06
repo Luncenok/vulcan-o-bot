@@ -100,7 +100,29 @@ module.exports.generateEmbed = (title, description, fields) => {
     }
     /**
      * @todo icon get from assets folder, not from url
-     * @returns {Discord.MessageEmbed} Ready to send embed
+     * @returns {discord.MessageEmbed} Ready to send embed
      */
     return {embed: Embed};
+}
+
+module.exports.getHomeworkFormattedText = (json) => {
+    let homeworkText = ""
+    json.forEach(day => {
+        if (day["Homework"].length > 0) {
+            homeworkText += `${day["Date"].split(' ')[0]}:\n`
+            day["Homework"].forEach(homework => {
+                if (homework["Description"] === "") homework["Description"] = "(brak opisu)"
+
+                let testString = homeworkText + `${homework["Subject"]}\n` +
+                    `${homework["Description"]}\n` +
+                    `${homework["Teacher"]}\n\n`
+                if (testString.length < 2000)
+                    homeworkText += `${homework["Subject"]}\n` +
+                        `${homework["Description"]}\n` +
+                        `${homework["Teacher"]}\n\n`
+            })
+        }
+    })
+    if (homeworkText === "") homeworkText = "Brak zadań domowych"
+    return homeworkText
 }

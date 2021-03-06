@@ -77,7 +77,7 @@ module.exports.getTimetableFormattedText = (json, dayOfWeek) => {
 module.exports.generateEmbed = (title, description, fields) => {
     /**
      * Generates embed for Vulcan'o'bot with color, author, timestamp and footer
-     *
+     * 
      * @author Łukasz Szczyt
      * @param {string} title Title of generated embed
      * @param {string} description Description of generated embed

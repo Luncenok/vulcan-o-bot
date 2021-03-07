@@ -1,7 +1,7 @@
 {
   "name": "vulcan-o-bot",
   "version": "0.2.1",
-  "main": "index.js",
+  "main": "bot.js",
   "license": "MIT",
   "dependencies": {
     "@keyv/mongo": "^1.1.0",

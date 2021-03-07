@@ -3,7 +3,7 @@ module.exports = {
     description: "Popokazuje informacje o bocie",
     aliases: ['informacje', 'stats'],
     usage: 'info',
-    category: 'develop',
+    category: 'other',
     async execute(client, message) {
         const utils = require('../utils');
         const version = require('../package.json').version;

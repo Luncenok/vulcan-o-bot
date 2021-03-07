@@ -76,7 +76,7 @@ module.exports.getTimetableFormattedText = (json, dayOfWeek) => {
 
 module.exports.generateEmbed = (title, description, fields) => {
     /**
-     * Generates embed object for Vulcan'o'bot with color, author, timestamp and footer
+     * Generates embed for Vulcan'o'bot with color, author, timestamp and footer
      *
      * @author Łukasz Szczyt
      * @param {string} title Title of generated embed
@@ -100,9 +100,9 @@ module.exports.generateEmbed = (title, description, fields) => {
     }
     /**
      * @todo icon get from assets folder, not from url
-     * @returns {embed object} Ready object to embed in message
+     * @returns {discord.MessageEmbed} Ready to send empty message with embed
      */
-    return Embed;
+    return {content: "", embed: Embed};
 }
 
 module.exports.getExamsFormattedText = (json) => {

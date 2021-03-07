@@ -43,11 +43,11 @@ module.exports = {
                         })
                     })
                 };
-                loginProgressMessage.edit({content: "", embed: utils.generateEmbed(
+                loginProgressMessage.edit(utils.generateEmbed(
                     "Sprawdziany",
                     "Sprawdziany, kartkówki i prace klasowe na najbliższe 4 tygodnie",
                     exams
-                )});
+                ));
             })
         } else {
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")

@@ -69,7 +69,7 @@ module.exports = {
                     }
                 ]
             )
-            message.channel.send(helpEmbed);
+            message.channel.send({embed: helpEmbed});
         }
     }
 }

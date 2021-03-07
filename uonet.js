@@ -339,7 +339,7 @@ module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken
         })
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
-    return utils.getExamsFormattedText(examsJson)
+    return examsJson
 }
 
 module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {

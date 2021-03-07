@@ -77,7 +77,7 @@ module.exports.getTimetableFormattedText = (json, dayOfWeek) => {
 module.exports.generateEmbed = (title, description, fields) => {
     /**
      * Generates embed for Vulcan'o'bot with color, author, timestamp and footer
-     *
+     * 
      * @author Łukasz Szczyt
      * @param {string} title Title of generated embed
      * @param {string} description Description of generated embed
@@ -103,47 +103,6 @@ module.exports.generateEmbed = (title, description, fields) => {
      * @returns {discord.MessageEmbed} Ready to send empty message with embed
      */
     return {content: "", embed: Embed};
-}
-
-module.exports.getExamsFormattedText = (json) => {
-    let examsText = ""
-    json.forEach(tydzien => {
-        tydzien["SprawdzianyGroupedByDayList"].forEach(day => {
-            if (day["Sprawdziany"].length > 0) {
-                examsText += `${day["Data"].split(' ')[0]}:\n`
-                day["Sprawdziany"].forEach(sprawdzian => {
-                    let rodzaj;
-                    switch (sprawdzian["Rodzaj"]) {
-                        case 1:
-                            rodzaj = "Sprawdzian"
-                            break
-                        case 2:
-                            rodzaj = "Kartkówka"
-                            break
-                        case 3:
-                            rodzaj = "Praca klasowa"
-                            break
-                        default:
-                            rodzaj = "inne"
-                            break
-                    }
-                    if (sprawdzian["Opis"] === "") sprawdzian["Opis"] = "(brak opisu)"
-
-                    let testString = examsText + `${sprawdzian["DisplayValue"]}\n` +
-                        `${sprawdzian["PracownikModyfikujacyDisplay"]}\n` +
-                        `${sprawdzian["Opis"]}\n` +
-                        `${rodzaj}\n\n`
-                    if (testString.length < 2000)
-                        examsText += `${sprawdzian["DisplayValue"]}\n` +
-                            `${sprawdzian["PracownikModyfikujacyDisplay"]}\n` +
-                            `${sprawdzian["Opis"]}\n` +
-                            `${rodzaj}\n\n`
-                })
-            }
-        })
-    })
-    if (examsText === "") examsText = "Brak sprawdzianów"
-    return examsText
 }
 
 module.exports.getHomeworkFormattedText = (json) => {

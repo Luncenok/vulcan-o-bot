@@ -1,30 +1,6 @@
-/*
-module.exports.getHomeworkFormattedText = (json) => {
-    let homeworkText = ""
-    json.forEach(day => {
-        if (day["Homework"].length > 0) {
-            homeworkText += `${day["Date"].split(' ')[0]}:\n`
-            day["Homework"].forEach(homework => {
-                if (homework["Description"] === "") homework["Description"] = "(brak opisu)"
-
-                let testString = homeworkText + `${homework["Subject"]}\n` +
-                    `${homework["Description"]}\n` +
-                    `${homework["Teacher"]}\n\n`
-                if (testString.length < 2000)
-                    homeworkText += `${homework["Subject"]}\n` +
-                        `${homework["Description"]}\n` +
-                        `${homework["Teacher"]}\n\n`
-            })
-        }
-    })
-    if (homeworkText === "") homeworkText = "Brak zadań domowych"
-    return homeworkText
-}
-*/
-
 module.exports = {
     name: "homework",
-    description: "Pokazuje zadania domowe na następny tydzień lub mniej jeżeli przekroczy limit 2000 znaków)",
+    description: "Pokazuje zadania domowe na następny tydzień",
     aliases: ['zadania', 'domowe', 'zadania-domowe', 'zaddom', 'zad'],
     usage: 'homework',
     category: 'vulcan',
@@ -34,7 +10,7 @@ module.exports = {
 
         const loginProgressMessage = await message.channel.send("Logowanie... 0%")
 
-        let homework = [], workDataText, workSubjectText, workDescriptionText, workTeacherText, workTypeText
+        let homework = [], workDataText, workSubjectText, workDescriptionText, workTeacherText
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
@@ -45,7 +21,7 @@ module.exports = {
                 return uonet.getHomework(pcsaavArray, day, loginProgressMessage)
             }).then(json => {
                 json.forEach(day => {
-                    day["Homework"].forEach(work => {
+                    day["Homework"].forEach(work => { // ale to jest rzyg. Jak poprosisz vulcana o json sprawdzianów, to obiekt sprawdzianów nazywa się "Sprawdziany" a jak poprosisz vulcana o json zadań domowych, to obiekt zadań nazywa się "Homework"
                         workDataText = `Dzień: ${day["Date"].split(' ')[0]}`;
                         workSubjectText = work["Subject"]
                         workDescriptionText = work["Description"] ? ` - ${work["Description"]}` : ""

@@ -8,13 +8,7 @@ module.exports = {
         const fs = require('fs');
         const utils = require('../utils');
         const files = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-        let commands = [];
-        files.forEach(file => {
-            comName = file.split(".")[0];
-            let command = client.commands.get(comName)
-                || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(comName));
-            commands.push(command);
-        })
+        let commands = client.commands
         let comsOtherNames = []
         let comsVulcanNames = []
         commands.forEach(command => {

@@ -100,9 +100,9 @@ module.exports.generateEmbed = (title, description, fields) => {
     }
     /**
      * @todo icon get from assets folder, not from url
-     * @returns {discord.MessageEmbed} Ready to send embed
+     * @returns {discord.MessageEmbed} Ready to send empty message with embed
      */
-    return {embed: Embed};
+    return {content: "", embed: Embed};
 }
 
 module.exports.getExamsFormattedText = (json) => {

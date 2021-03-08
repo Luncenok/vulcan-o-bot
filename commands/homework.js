@@ -24,7 +24,7 @@ module.exports = {
                     day["Homework"].forEach(work => { // ale to jest rzyg. Jak poprosisz vulcana o json sprawdzianów, to obiekt sprawdzianów nazywa się "Sprawdziany" a jak poprosisz vulcana o json zadań domowych, to obiekt zadań nazywa się "Homework"
                         workDataText = `Dzień: ${day["Date"].split(' ')[0]}`;
                         workSubjectText = work["Subject"]
-                        workDescriptionText = work["Description"] ? ` - ${work["Description"]}` : ""
+                        workDescriptionText = work["Description"] ? ` - ${work["Description"]}` : "(brak opisu)"
                         workTeacherText = `Nauczyciel: ${work["Teacher"].split(',')[0]}`
                         homework.push({
                             name: workSubjectText+workDescriptionText,

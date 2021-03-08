@@ -266,7 +266,7 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
     let data = new Date()
     data.setDate(day)
     let dayOfWeek = data.getDay()
-    if (dayOfWeek >= 6) dayOfWeek = 1
+    if (dayOfWeek === 0 || dayOfWeek === 6) dayOfWeek = 1
     data = data.toISOString().slice(0, 11) + '00:00:00'
     const body = {
         'data': data

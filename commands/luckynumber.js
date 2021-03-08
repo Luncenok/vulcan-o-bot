@@ -15,7 +15,11 @@ module.exports = {
             await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
                 return uonet.getLuckyNumber(permcookiesymbolArray, loginProgressMessage)
             }).then(luckyNumberText => {
-                loginProgressMessage.edit(luckyNumberText)
+                loginProgressMessage.edit(utils.generateEmbed(
+                    "Szczęśliwy numerek",
+                    luckyNumberText,
+                    []
+                ))
             })
         } else {
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")

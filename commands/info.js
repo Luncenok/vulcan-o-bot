@@ -23,7 +23,7 @@ module.exports = {
                 value: `${process.env.NODE_ENV}`
             }, {
                 name: "Hosting",
-                value: `<@${process.env.HOST}>`
+                value: `${process.env.HOST}`
             }
             ]))
     }

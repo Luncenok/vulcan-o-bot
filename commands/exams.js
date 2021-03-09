@@ -1,6 +1,6 @@
 module.exports = {
     name: "exams",
-    description: "Pokazuje sprawdziany na następne 4 tygodnie lub mniej jeżeli przekroczy limit 2000 znaków)",
+    description: "Pokazuje sprawdziany na następne 4 tygodnie",
     aliases: ['sprawdziany', 'tests', 'kartkowki'],
     usage: 'exams',
     category: 'vulcan',

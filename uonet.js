@@ -380,5 +380,5 @@ module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryTo
         })
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
-    return utils.getHomeworkFormattedText(homeworkJson)
+    return homeworkJson;
 }

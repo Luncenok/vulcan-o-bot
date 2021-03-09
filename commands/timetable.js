@@ -10,9 +10,12 @@ module.exports = {
 
         const loginProgressMessage = await message.channel.send("Logowanie... 0%")
 
+        const weekDays = ["poniedziałek", "wtorek", "środa", "czwartek", "piątek"]
+
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
             const day = utils.getDateFromText(args[0])
+            console.log(day)
             await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
                 return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
             }).then(pcsaavArray => {

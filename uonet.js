@@ -259,8 +259,8 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProg
     return luckyNumberText
 }
 
-module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl], day, loginProgressMessage) => {
-
+module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl], data, loginProgressMessage) => {
+    /*
     let timetableJson
     let url = `${baseUrl}/PlanZajec.mvc/Get`
     let data = new Date()
@@ -271,6 +271,15 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
     const body = {
         'data': data
     }
+    */
+    let timetableJson
+    let url = `${baseUrl}/PlanZajec.mvc/Get`
+    // parsowanie daty dla uoneta
+    data = data.toISOString().slice(0, 11) + '00:00:00'
+    const body = {
+        'data': data
+    }
+    // uonet chce daty rrrr-mm-ddT00:00:00
 
     await fetch(url, {
         method: 'post',
@@ -298,7 +307,7 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
         })
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
-    return utils.getTimetableFormattedText(timetableJson, dayOfWeek)
+    return timetableJson;
 }
 
 module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {

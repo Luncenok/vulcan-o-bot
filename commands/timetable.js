@@ -39,7 +39,7 @@ module.exports = {
             return `\`\`\`${timetableText}\`\`\``
         }
 
-        const weekDays = ["poniedziałek", "wtorek", "środa", "czwartek", "piątek"]
+        const weekDays = ["","poniedziałek", "wtorek", "środa", "czwartek", "piątek"]
         function getWeekDay(arg) {
             if (weekDays.indexOf(arg) != -1) {
                 return weekDays.indexOf(arg)

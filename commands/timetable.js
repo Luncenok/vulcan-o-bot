@@ -43,8 +43,11 @@ module.exports = {
         function getWeekDay(arg) {
             if (weekDays.indexOf(arg) != -1) {
                 return weekDays.indexOf(arg)
-            } else if (Number(arg) >= 1 && Number(arg) <= 5) {
-                return Number(arg)
+            } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
+                return parseInt(arg)
+            } else {
+                let day = new Date().getDay()
+                return day == 0 || day == 6 ? 1 : day
             }
         }
 
@@ -57,7 +60,7 @@ module.exports = {
             }).then(pcsaavArray => {
                 return uonet.getTimetable(pcsaavArray, new Date(), loginProgressMessage)
             }).then(json => {
-                loginProgressMessage.edit(getTimetableFormattedText(json, getWeekDay(args[0])))
+                loginProgressMessage.edit("Plan na dzień: "+weekDays[getWeekDay(args[0])]+"\n"+getTimetableFormattedText(json, getWeekDay(args[0])))
             })
         } else {
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")

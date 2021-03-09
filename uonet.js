@@ -249,7 +249,7 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProg
         .then(res => res.text())
         .then(res => {
             let lnJson = JSON.parse(res)
-            luckyNumberText = lnJson["data"][0]["Zawartosc"][0]["Zawartosc"][0]["Nazwa"]
+            luckyNumberText = lnJson["data"][0]["Zawartosc"][0]["Zawartosc"][0]["Nazwa"] // bez jaj...
         })
         .catch(error => {
             loginProgressMessage.edit(error)

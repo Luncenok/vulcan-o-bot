@@ -21,6 +21,9 @@ module.exports = {
             }, {
                 name: 'Tryb',
                 value: `${process.env.NODE_ENV}`
+            }, {
+                name: "Hosting",
+                value: `${process.env.HOST}`
             }
             ]))
     }

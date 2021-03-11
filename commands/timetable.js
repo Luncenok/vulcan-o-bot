@@ -40,14 +40,22 @@ module.exports = {
         }
 
         const weekDays = ["","poniedziałek", "wtorek", "środa", "czwartek", "piątek"]
-        function getWeekDay(arg) {
+        function getWeekDay(arg, json) {
             if (weekDays.indexOf(arg) != -1) {
                 return weekDays.indexOf(arg)
             } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
                 return parseInt(arg)
             } else {
-                let day = new Date().getDay()
-                return day == 0 || day == 6 ? 1 : day
+                let day = new Date()
+                let last
+                for (let lesson of json.reverse()) {
+                    if (lesson[day.getDay()]) {
+                        last = parseFloat(lesson[0].split('<br />')[2].split(':').join('.'))
+                        break
+                    }
+                }
+                json.reverse()
+                return day.getDay() == 0 || day.getDay() == 6 ? 1 : day.getDay() + Number(day.getHours() + day.getMinutes()/100 >= last)
             }
         }
 
@@ -60,7 +68,8 @@ module.exports = {
             }).then(pcsaavArray => {
                 return uonet.getTimetable(pcsaavArray, new Date(), loginProgressMessage)
             }).then(json => {
-                loginProgressMessage.edit("Plan na dzień: "+weekDays[getWeekDay(args[0])]+"\n"+getTimetableFormattedText(json, getWeekDay(args[0])))
+                let day = getWeekDay(args[0], json)
+                loginProgressMessage.edit("Plan na dzień: "+weekDays[day]+"\n"+getTimetableFormattedText(json, day))
             })
         } else {
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")

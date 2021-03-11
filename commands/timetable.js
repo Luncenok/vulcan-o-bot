@@ -39,12 +39,16 @@ module.exports = {
             return `\`\`\`${timetableText}\`\`\``
         }
 
-        const weekDays = ["","poniedziałek", "wtorek", "środa", "czwartek", "piątek"]
+        const weekDays = ["","poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
         function getWeekDay(arg, json) {
             if (weekDays.indexOf(arg) != -1) {
                 return weekDays.indexOf(arg)
             } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
                 return parseInt(arg)
+            } else if (/^[0-9]{2}\.[0-1][0-9]\.20[0-9]{2}$/.test(args[0])) {
+                let day = new Date()
+                day.setFullYear(Number(args[0].split('.')[2]), Number(args[0].split('.')[1])-1, Number(args[0].split('.')[0]))
+                return day.getDay();
             } else {
                 let day = new Date()
                 let last

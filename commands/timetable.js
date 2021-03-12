@@ -41,16 +41,18 @@ module.exports = {
 
         const weekDays = ["","poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
         function getWeekDay(arg, json) {
+            let day = date;
             if (weekDays.indexOf(arg) != -1) {
+                console.log("data po nazwie dnia")
                 return weekDays.indexOf(arg)
             } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
+                console.log("data po numerze dnia")
                 return parseInt(arg)
-            } else if (/^[0-9]{2}\.[0-1][0-9]\.20[0-9]{2}$/.test(args[0])) {
-                let day = new Date()
-                day.setFullYear(Number(args[0].split('.')[2]), Number(args[0].split('.')[1])-1, Number(args[0].split('.')[0]))
-                return day.getDay();
+            } else if (gotDate) {
+                console.log("data z daty")
+                return day.getDay()
             } else {
-                let day = new Date()
+                console.log("data z automatu")
                 let last
                 for (let lesson of json.reverse()) {
                     if (lesson[day.getDay()]) {
@@ -59,18 +61,29 @@ module.exports = {
                     }
                 }
                 json.reverse()
-                return day.getDay() == 0 || day.getDay() == 6 ? 1 : day.getDay() + Number(day.getHours() + day.getMinutes()/100 >= last)
+                return (day.getDay() == 0 || day.getDay() == 6 ? 1 : day.getDay() + Number(day.getHours() + day.getMinutes()/100 >= last))
             }
         }
+        function getWeekDate(arg) {
+            let day = new Date();
+            if (dateRegex.test(arg)) {
+                day.setFullYear(Number(args[0].split(/[\.\-\/]/)[2]), Number(args[0].split(/[\.\-\/]/)[1])-1, Number(args[0].split(/[\.\-\/]/)[0]))
+                gotDate = true
+            }
+            return day;
+        }
 
+        const dateRegex = /(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})/
         const loginProgressMessage = await message.channel.send("Logowanie... 0%")
-
+        var gotDate = false
+        const date = getWeekDate(args[0])
+        
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) { 
             await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
                 return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
             }).then(pcsaavArray => {
-                return uonet.getTimetable(pcsaavArray, new Date(), loginProgressMessage)
+                return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
             }).then(json => {
                 let day = getWeekDay(args[0], json)
                 loginProgressMessage.edit("Plan na dzień: "+weekDays[day]+"\n"+getTimetableFormattedText(json, day))

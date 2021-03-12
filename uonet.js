@@ -299,7 +299,11 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
         .then(res => res.text())
         .then(res => {
             let json = JSON.parse(res)
-            timetableJson = json["data"]["Rows"]
+            if (json["success"])
+                timetableJson = json["data"]["Rows"]
+            else {
+                throw "No timetable data"
+            }
         })
         .catch(error => {
             loginProgressMessage.edit(error)

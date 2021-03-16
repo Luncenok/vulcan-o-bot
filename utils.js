@@ -4,7 +4,7 @@ const keyv = new Keyv(process.env.PATH_TO_DATABASE)
 const cheerio = require('cheerio')
 
 module.exports.getArgs = async (message) => {
-    let args = message.content.slice(process.env.PREFIX.length).split(/ +/);
+    let args = message.content.slice(process.env.PREFIX.length).replace(/\|\|/g, "").split(/ +/);
     args.shift()
     return args
 }

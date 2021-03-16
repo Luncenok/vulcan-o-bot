@@ -53,7 +53,10 @@ module.exports = {
                                 name: `${przedmiot["Przedmiot"]} - ${przedmiot["Srednia"]} | ${proczna} | ${roczna}`,
                                 value: "Minął czas na reakcję"
                             })
-                        }
+                        } else fields.push({
+                            name: `Brak ocen`,
+                            value: "Nie znaleziono żadnych ocen"
+                        })
                     })
                     embedZOcenami = utils.generateEmbed(
                         "Podsumowanie ocen",
@@ -85,7 +88,10 @@ module.exports = {
                                 value: `Wpis: ${ocena["Wpis"]}\nWaga: ${ocena["Waga"]}\nNauczyciel: ${ocena["Nauczyciel"]}`
                             })
                         })
-                    }
+                    } else fields.push({
+                        name: `Brak ocen`,
+                        value: "Nie znaleziono żadnych ocen"
+                    })
                     fields.push({
                         name: `Średnia: ${wybranyPrzedmiot["Srednia"]}`,
                         value: `Proponowana roczna: ${wybranyPrzedmiot["ProponowanaOcenaRoczna"]}\nOcena roczna: ${wybranyPrzedmiot["OcenaRoczna"]}`

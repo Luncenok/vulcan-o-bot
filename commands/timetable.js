@@ -32,9 +32,22 @@ module.exports = {
                     psalaSplitted = $.text().split("   ")
                 if (psalaSplitted.length < 2)
                     psalaSplitted = $.text().split("  ")
+                if (psalaSplitted.length < 2) {
+                    let tab, tab2 = [], tab3 = []
+                    tab = $.text().split(" ")
+                    for (let i = 0; i < tab.length-1; i++) {
+                        tab2.push(tab[i])
+                    }
+                    let x = tab2.join(" ")
+                    tab3.push(x)
+                    tab3.push(tab[tab.length-1])
+                    psalaSplitted = tab3
+                }
                 let psalaReversed = psalaSplitted.reverse()
-                let salap = psalaReversed.join("\t")
-                timetableText += salap + '\n'
+                if (psalaReversed.join("") !== '') {
+                    let salap = psalaReversed.join("\t")
+                    timetableText += salap + '\n'
+                }
             })
             return `\`\`\`${timetableText}\`\`\``
         }

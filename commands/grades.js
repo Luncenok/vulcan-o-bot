@@ -53,10 +53,11 @@ module.exports = {
                                 name: `${przedmiot["Przedmiot"]} - ${przedmiot["Srednia"]} | ${proczna} | ${roczna}`,
                                 value: "Minął czas na reakcję"
                             })
-                        } else fields.push({
-                            name: `Brak ocen`,
-                            value: "Nie znaleziono żadnych ocen"
-                        })
+                        }
+                    })
+                    if (fields.length <= 0) fields.push({
+                        name: `Brak ocen`,
+                        value: "Nie znaleziono żadnych ocen"
                     })
                     embedZOcenami = utils.generateEmbed(
                         "Podsumowanie ocen",
@@ -121,26 +122,29 @@ module.exports = {
                         fieldsBez
                     )
                 }
-                loginProgressMessage.edit(embedBezOcen)
-                loginProgressMessage.react('👍').then(() => loginProgressMessage.react('👎'));
+                if (message.channel.type === 'dm') loginProgressMessage.edit(embedZOcenami)
+                else {
+                    loginProgressMessage.edit(embedBezOcen)
+                    loginProgressMessage.react('👍').then(() => loginProgressMessage.react('👎'));
 
-                const filter = (reaction, user) => {
-                    return ['👍', '👎'].includes(reaction.emoji.name) && user.id === message.author.id;
-                };
+                    const filter = (reaction, user) => {
+                        return ['👍', '👎'].includes(reaction.emoji.name) && user.id === message.author.id;
+                    };
 
-                loginProgressMessage.awaitReactions(filter, {max: 1, time: 60000, errors: ['time']})
-                    .then(collected => {
-                        const reaction = collected.first();
+                    loginProgressMessage.awaitReactions(filter, {max: 1, time: 60000, errors: ['time']})
+                        .then(collected => {
+                            const reaction = collected.first();
 
-                        if (reaction.emoji.name === '👍') {
-                            loginProgressMessage.edit(embedZOcenami)
-                        } else {
-                            loginProgressMessage.edit(embedUkryty)
-                        }
-                    })
-                    .catch(collected => {
-                        loginProgressMessage.edit(embedCzas)
-                    })
+                            if (reaction.emoji.name === '👍') {
+                                loginProgressMessage.edit(embedZOcenami)
+                            } else {
+                                loginProgressMessage.edit(embedUkryty)
+                            }
+                        })
+                        .catch(collected => {
+                            loginProgressMessage.edit(embedCzas)
+                        })
+                }
             })
         } else {
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")

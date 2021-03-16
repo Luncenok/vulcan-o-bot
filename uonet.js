@@ -138,7 +138,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
         return [permissions, ciasteczka, symbol, baseUrl]
     } catch (error) {
         console.log(`!error! user id: ${loginMessage.author.id} error: ${error}`)
-        loginProgressMessage.edit(`\`\`\`\n${error}\`\`\``)
+        await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return [undefined, undefined, undefined, undefined]
     }
 }
@@ -226,7 +226,7 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
         return [permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId]
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.edit(`\`\`\`\n${error}\`\`\``)
+        await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return [undefined, undefined, undefined, undefined]
     }
 }

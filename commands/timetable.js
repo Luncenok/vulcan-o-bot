@@ -56,16 +56,12 @@ module.exports = {
         function getWeekDay(arg, json) {
             let day = date;
             if (weekDays.indexOf(arg) != -1) {
-                console.log("data po nazwie dnia")
                 return weekDays.indexOf(arg)
             } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
-                console.log("data po numerze dnia")
                 return parseInt(arg)
             } else if (gotDate) {
-                console.log("data z daty")
                 return day.getDay()
             } else {
-                console.log("data z automatu")
                 let last
                 for (let lesson of json.reverse()) {
                     if (lesson[day.getDay()]) {

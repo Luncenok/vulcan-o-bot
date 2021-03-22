@@ -7,4 +7,4 @@ Discord bot client for vulcan uonet+ register
  ```
  
  # Usage
- `?ping`
+ `?help`

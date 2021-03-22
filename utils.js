@@ -44,36 +44,6 @@ module.exports.getDateFromText = (day) => {
     }
 }
 
-module.exports.getTimetableFormattedText = (json, dayOfWeek) => {
-    let timetableText = ""
-    json.forEach(lesson => {
-        if (lesson[dayOfWeek] !== "") {
-            let hoursString = lesson[0]
-            let hoursSplitted = hoursString.split("<br />")
-            hoursString = hoursSplitted.join("\t")
-            timetableText += hoursString + "\t"
-        }
-
-        if (lesson[dayOfWeek] === undefined) {
-            timetableText = 'Brak lekcji tego dnia!'
-            return
-        }
-
-        let $ = cheerio.load(lesson[dayOfWeek], {xmlMode: false})
-        let psalaSplitted = $.text().split("     ")
-        if (psalaSplitted.length < 2)
-            psalaSplitted = $.text().split("    ")
-        if (psalaSplitted.length < 2)
-            psalaSplitted = $.text().split("   ")
-        if (psalaSplitted.length < 2)
-            psalaSplitted = $.text().split("  ")
-        let psalaReversed = psalaSplitted.reverse()
-        let salap = psalaReversed.join("\t")
-        timetableText += salap + '\n'
-    })
-    return `\`\`\`${timetableText}\`\`\``
-}
-
 module.exports.generateEmbed = (title, description, fields) => {
     /**
      * Generates embed for Vulcan'o'bot with color, author, timestamp and footer

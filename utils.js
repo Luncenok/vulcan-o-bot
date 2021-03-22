@@ -1,7 +1,6 @@
 const discord = require('discord.js')
 const Keyv = require("keyv")
 const keyv = new Keyv(process.env.PATH_TO_DATABASE)
-const cheerio = require('cheerio')
 
 module.exports.getArgs = async (message) => {
     let args = message.content.slice(process.env.PREFIX.length).replace(/\|\|/g, "").split(/ +/);
@@ -12,7 +11,7 @@ module.exports.getArgs = async (message) => {
 module.exports.getLoginMessageOrUndefined = async (author) => {
     let messageId = ""
     messageId = await keyv.get(author.id)
-    let msg
+    let msg = undefined
     if (messageId)
         await author.createDM()
             .then(channel => channel.messages)
@@ -32,22 +31,10 @@ module.exports.removeFromDatabase = async (userId) => {
     await keyv.delete(userId)
 }
 
-module.exports.getDateFromText = (day) => {
-    let dateDay = new Date().getDate()
-    switch (day) {
-        case "dzisiaj":
-            return dateDay
-        case "jutro":
-            return dateDay + 1
-        default:
-            return dateDay
-    }
-}
-
 module.exports.generateEmbed = (title, description, fields) => {
     /**
      * Generates embed for Vulcan'o'bot with color, author, timestamp and footer
-     * 
+     *
      * @author Łukasz Szczyt
      * @param {string} title Title of generated embed
      * @param {string} description Description of generated embed

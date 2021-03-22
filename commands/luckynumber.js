@@ -2,7 +2,7 @@ module.exports = {
     name: "luckynumber",
     description: "Pokazuje szczęśliwy numerek jeżeli dostępny",
     aliases: ['ln', 'numerek', 'szczesliwynumerek', 'szczesliwy', 'lucky', 'number', 'sn'],
-    usage: 'luckynumber',
+    usage: ['luckynumber'],
     category: 'vulcan',
     async execute(client, message) {
         const uonet = require('../uonet')

@@ -2,7 +2,7 @@ module.exports = {
     name: "info",
     description: "Popokazuje informacje o bocie",
     aliases: ['informacje', 'stats'],
-    usage: 'info',
+    usage: ['info'],
     category: 'other',
     async execute(client, message) {
         const utils = require('../utils');

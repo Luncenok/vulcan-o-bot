@@ -2,7 +2,7 @@ module.exports = {
     name: "homework",
     description: "Pokazuje zadania domowe na następny tydzień",
     aliases: ['zadania', 'domowe', 'zadania-domowe', 'zaddom', 'zad'],
-    usage: 'homework',
+    usage: ['homework'],
     category: 'vulcan',
     async execute(client, message) {
         const uonet = require('../uonet')

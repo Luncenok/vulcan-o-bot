@@ -2,7 +2,7 @@ module.exports = {
     name: "login",
     description: "Loguje się do platformy vulcan uonet+ (Ze względów bezpieczeństwa, logować się można tylko w wiadomości **prywatnej** (dm) do mnie)",
     aliases: ['zaloguj', 'loguj'],
-    usage: 'login [email] [hasło] [symbol]',
+    usage: ['login jan.kowalski@gmail.com Qwerty123 warszawa', 'login ||adamnowak69 zaq1@WSX poznan||', '||login marcin.gwozdz@wp.pl 1@qwerty warszawa||'],
     category: 'vulcan',
     async execute(client, message, args) {
 

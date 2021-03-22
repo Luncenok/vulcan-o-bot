@@ -2,7 +2,7 @@ module.exports = {
     name: "ping",
     description: "Odpowiada: Pong!",
     aliases: ['pong'],
-    usage: 'ping',
+    usage: ['ping'],
     category: 'other',
     async execute(client, message) {
         const checkmessage = await message.channel.send('Sprawdzanie...');

@@ -2,7 +2,7 @@ module.exports = {
     name: "exams",
     description: "Pokazuje sprawdziany na następne 4 tygodnie",
     aliases: ['sprawdziany', 'tests', 'kartkowki'],
-    usage: 'exams',
+    usage: ['exams'],
     category: 'vulcan',
     async execute(client, message) {
         const uonet = require('../uonet')
@@ -42,7 +42,7 @@ module.exports = {
                             })
                         })
                     })
-                };
+                }
                 loginProgressMessage.edit(utils.generateEmbed(
                     "Sprawdziany",
                     "Sprawdziany, kartkówki i prace klasowe na najbliższe 4 tygodnie",

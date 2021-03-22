@@ -2,7 +2,7 @@ module.exports = {
     name: "grades",
     description: "Pokazuje podsumowanie ocen z wybranego lub wszystkich przedmiotów",
     aliases: ['oceny', 'ocenki'],
-    usage: 'grades [wszystkie/przedmiot]',
+    usage: ['grades', 'grades wszystkie', 'grades matematyka', 'grades język angielski'],
     category: 'vulcan',
     async execute(client, message, args) {
         const uonet = require('../uonet')

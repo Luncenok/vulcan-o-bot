@@ -9,6 +9,26 @@ module.exports = {
         const utils = require('../utils')
         const cheerio = require("cheerio")
 
+        const dateRegex = /(?:(?:31([\/\-.])(?:0?[13578]|1[02]))\1|(?:(?:29|30)([\/\-.])(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29([\/\-.])0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])([\/\-.])(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})/
+        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let gotDate = false;
+        const date = getDateFromFormat(args[0])
+
+        const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
+        if (loginMessage) {
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
+                return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
+            }).then(pcsaavArray => {
+                return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
+            }).then(json => {
+                let day = getWeekDay(args[0], json)
+                loginProgressMessage.edit("Plan na dzień: " + weekDays[day] + "\n" + getTimetableFormattedText(json, day))
+            })
+        } else {
+            await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
+            await utils.removeFromDatabase(message.author.id)
+        }
+
         function getTimetableFormattedText(json, dayOfWeek) {
             let timetableText = ""
             json.forEach(lesson => {
@@ -45,12 +65,12 @@ module.exports = {
                 if (psalaSplitted.length < 2) {
                     let tab, tab2 = [], tab3 = []
                     tab = $.text().split(" ")
-                    for (let i = 0; i < tab.length-1; i++) {
+                    for (let i = 0; i < tab.length - 1; i++) {
                         tab2.push(tab[i])
                     }
                     let x = tab2.join(" ")
                     tab3.push(x)
-                    tab3.push(tab[tab.length-1])
+                    tab3.push(tab[tab.length - 1])
                     psalaSplitted = tab3
                 }
                 let psalaReversed = psalaSplitted.reverse()
@@ -62,10 +82,11 @@ module.exports = {
             return `\`\`\`${timetableText}\`\`\``
         }
 
-        const weekDays = ["","poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
+        const weekDays = ["", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
+
         function getWeekDay(arg, json) {
             let day = date;
-            if (weekDays.indexOf(arg) != -1) {
+            if (weekDays.indexOf(arg) !== -1) {
                 return weekDays.indexOf(arg)
             } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
                 return parseInt(arg)
@@ -80,36 +101,17 @@ module.exports = {
                     }
                 }
                 json.reverse()
-                return (day.getDay() == 0 || day.getDay() == 6 ? 1 : day.getDay() + Number(day.getHours() + day.getMinutes()/100 >= last))
+                return (day.getDay() === 0 || day.getDay() === 6 ? 1 : day.getDay() + Number(day.getHours() + day.getMinutes() / 100 >= last))
             }
         }
+
         function getDateFromFormat(arg) {
             let day = new Date();
             if (dateRegex.test(arg)) {
-                day.setFullYear(Number(args[0].split(/[\.\-\/]/)[2]), Number(args[0].split(/[\.\-\/]/)[1])-1, Number(args[0].split(/[\.\-\/]/)[0]))
+                day.setFullYear(Number(args[0].split(/[.\-\/]/)[2]), Number(args[0].split(/[.\-\/]/)[1]) - 1, Number(args[0].split(/[.\-\/]/)[0]))
                 gotDate = true
             }
             return day;
-        }
-
-        const dateRegex = /(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})/
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
-        var gotDate = false
-        const date = getDateFromFormat(args[0])
-
-        const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
-        if (loginMessage) {
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
-            }).then(pcsaavArray => {
-                return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
-            }).then(json => {
-                let day = getWeekDay(args[0], json)
-                loginProgressMessage.edit("Plan na dzień: " + weekDays[day] + "\n" + getTimetableFormattedText(json, day))
-            })
-        } else {
-            await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
-            await utils.removeFromDatabase(message.author.id)
         }
     }
 }

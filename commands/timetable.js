@@ -15,15 +15,25 @@ module.exports = {
                 if (lesson[dayOfWeek] !== "") {
                     let hoursString = lesson[0]
                     let hoursSplitted = hoursString.split("<br />")
-                    hoursString = hoursSplitted.join("\t")
-                    timetableText += hoursString + "\t"
+                    let date = new Date()
+                    let now = date.getHours() * 60 + date.getMinutes()
+                    let start = parseInt(hoursSplitted[1].split(':')[0]) * 60 + parseInt(hoursSplitted[1].split(':')[1])
+                    let end = parseInt(hoursSplitted[2].split(':')[0]) * 60 + parseInt(hoursSplitted[2].split(':')[1])
+                    if (start <= now && now <= end) {
+                        hoursString = hoursSplitted.join(" ~> ")
+                        timetableText += hoursString + " ~> "
+                    } else {
+                        hoursString = hoursSplitted.join("    ")
+                        timetableText += hoursString + "    "
+                    }
+
                 }
-        
+
                 if (lesson[dayOfWeek] === undefined) {
                     timetableText = 'Brak lekcji tego dnia!'
                     return
                 }
-        
+
                 let $ = cheerio.load(lesson[dayOfWeek], {xmlMode: false})
                 let psalaSplitted = $.text().split("     ")
                 if (psalaSplitted.length < 2)
@@ -86,16 +96,16 @@ module.exports = {
         const loginProgressMessage = await message.channel.send("Logowanie... 0%")
         var gotDate = false
         const date = getDateFromFormat(args[0])
-        
+
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
-        if (loginMessage) { 
+        if (loginMessage) {
             await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
                 return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
             }).then(pcsaavArray => {
                 return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
             }).then(json => {
                 let day = getWeekDay(args[0], json)
-                loginProgressMessage.edit("Plan na dzień: "+weekDays[day]+"\n"+getTimetableFormattedText(json, day))
+                loginProgressMessage.edit("Plan na dzień: " + weekDays[day] + "\n" + getTimetableFormattedText(json, day))
             })
         } else {
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")

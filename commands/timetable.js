@@ -22,8 +22,12 @@ module.exports = {
             }).then(pcsaavArray => {
                 return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
             }).then(json => {
+                let dayText;
                 let day = getWeekDay(args[0], json["Rows"])
-                loginProgressMessage.edit("Plan na dzień: " + weekDays[day] + "\n" + getTimetableFormattedText(json, day))
+                if (json["Headers"][day] !== undefined)
+                    dayText = json["Headers"][day]["Text"].split("<br />").join(" ");
+                else dayText = weekDays[day];
+                loginProgressMessage.edit("Plan na dzień: " + dayText + "\n" + getTimetableFormattedText(json, day))
             })
         } else {
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")

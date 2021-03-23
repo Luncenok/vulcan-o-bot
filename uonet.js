@@ -264,63 +264,30 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProg
 }
 
 module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl], data, loginProgressMessage) => {
-    /*
-    let timetableJson
-    let url = `${baseUrl}/PlanZajec.mvc/Get`
-    let data = new Date()
-    data.setDate(day)
-    let dayOfWeek = data.getDay()
-    if (dayOfWeek === 0 || dayOfWeek === 6) dayOfWeek = 1
-    data = data.toISOString().slice(0, 11) + '00:00:00'
-    const body = {
-        'data': data
-    }
-    */
-    let timetableJson
-    let url = `${baseUrl}/PlanZajec.mvc/Get`
-    // parsowanie daty dla uoneta
-    data = data.toISOString().slice(0, 11) + '00:00:00'
-    const body = {
-        'data': data
-    }
-    // uonet chce daty rrrr-mm-ddT00:00:00
 
-    await fetch(url, {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: {
-            'Cookie': cookies,
-            'User-Agent': 'Mozilla/5.0',
-            'Content-Type': 'application/json',
-            'x-requested-with': 'XMLHttpRequest',
-            'x-v-appguid': appGuid,
-            'x-v-appversion': version,
-            'x-v-requestverificationtoken': antiForgeryToken
-        },
-        follow: 0,
-        redirect: 'manual'
-    })
-        .then(res => res.text())
-        .then(res => {
-            let json = JSON.parse(res)
-            if (json["success"])
-                timetableJson = json["data"]["Rows"]
-            else {
-                throw "No timetable data"
-            }
-        })
-        .catch(error => {
-            loginProgressMessage.edit(error)
-            throw error
-        })
+    let url = `${baseUrl}/PlanZajec.mvc/Get`
+    data = data.toISOString().slice(0, 11) + '00:00:00'
+    const body = {
+        'data': data
+    }
+    const headers = {
+        'Cookie': cookies,
+        'User-Agent': 'Mozilla/5.0',
+        'Content-Type': 'application/json',
+        'x-requested-with': 'XMLHttpRequest',
+        'x-v-appguid': appGuid,
+        'x-v-appversion': version,
+        'x-v-requestverificationtoken': antiForgeryToken
+    }
+
+    let json = await fetchData(url, body, headers, loginProgressMessage)
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
-    return timetableJson;
+    return json;
 }
 
 module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
 
-    let examsJson
     let url = `${baseUrl}/Sprawdziany.mvc/Get`
     let data = new Date()
     data.setDate(day)
@@ -329,39 +296,24 @@ module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken
         'data': data,
         'rokSzkolny': rokSzkolny
     }
+    const headers = {
+        'Cookie': cookies,
+        'User-Agent': 'Mozilla/5.0',
+        'Content-Type': 'application/json',
+        'x-requested-with': 'XMLHttpRequest',
+        'x-v-appguid': appGuid,
+        'x-v-appversion': version,
+        'x-v-requestverificationtoken': antiForgeryToken
+    }
 
-    await fetch(url, {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: {
-            'Cookie': cookies,
-            'User-Agent': 'Mozilla/5.0',
-            'Content-Type': 'application/json',
-            'x-requested-with': 'XMLHttpRequest',
-            'x-v-appguid': appGuid,
-            'x-v-appversion': version,
-            'x-v-requestverificationtoken': antiForgeryToken
-        },
-        follow: 0,
-        redirect: 'manual'
-    })
-        .then(res => res.text())
-        .then(res => {
-            let json = JSON.parse(res)
-            examsJson = json["data"]
-        })
-        .catch(error => {
-            loginProgressMessage.edit(error)
-            throw error
-        })
+    let json = await fetchData(url, body, headers, loginProgressMessage)
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
-    return examsJson
+    return json
 }
 
 module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
 
-    let homeworkJson
     let url = `${baseUrl}/Homework.mvc/Get`
     let data = new Date()
     data.setDate(day)
@@ -370,69 +322,61 @@ module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryTo
         'date': data,
         'schoolYear': rokSzkolny
     }
+    const headers = {
+        'Cookie': cookies,
+        'User-Agent': 'Mozilla/5.0',
+        'Content-Type': 'application/json',
+        'x-requested-with': 'XMLHttpRequest',
+        'x-v-appguid': appGuid,
+        'x-v-appversion': version,
+        'x-v-requestverificationtoken': antiForgeryToken
+    }
 
-    await fetch(url, {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: {
-            'Cookie': cookies,
-            'User-Agent': 'Mozilla/5.0',
-            'Content-Type': 'application/json',
-            'x-requested-with': 'XMLHttpRequest',
-            'x-v-appguid': appGuid,
-            'x-v-appversion': version,
-            'x-v-requestverificationtoken': antiForgeryToken
-        },
-        follow: 0,
-        redirect: 'manual'
-    })
-        .then(res => res.text())
-        .then(res => {
-            let json = JSON.parse(res)
-            homeworkJson = json["data"]
-        })
-        .catch(error => {
-            loginProgressMessage.edit(error)
-            throw error
-        })
+    let json = await fetchData(url, body, headers, loginProgressMessage)
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
-    return homeworkJson;
+    return json;
 }
 
 module.exports.getGrades = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], day, loginProgressMessage) => {
 
-    let gradesJson
     let url = `${baseUrl}/Oceny.mvc/Get`
     const body = {
         'okres': okresId
     }
+    const headers = {
+        'Cookie': cookies,
+        'User-Agent': 'Mozilla/5.0',
+        'Content-Type': 'application/json',
+        'x-requested-with': 'XMLHttpRequest',
+        'x-v-appguid': appGuid,
+        'x-v-appversion': version,
+        'x-v-requestverificationtoken': antiForgeryToken
+    }
 
+    let json = await fetchData(url, body, headers, loginProgressMessage)
+
+    await loginProgressMessage.edit('Pobieranie danych... 99%')
+    return json["Oceny"];
+}
+
+async function fetchData(url, body, headers, message) {
+    let json = undefined
     await fetch(url, {
         method: 'post',
         body: JSON.stringify(body),
-        headers: {
-            'Cookie': cookies,
-            'User-Agent': 'Mozilla/5.0',
-            'Content-Type': 'application/json',
-            'x-requested-with': 'XMLHttpRequest',
-            'x-v-appguid': appGuid,
-            'x-v-appversion': version,
-            'x-v-requestverificationtoken': antiForgeryToken
-        },
+        headers: headers,
         follow: 0,
         redirect: 'manual'
     })
         .then(res => res.text())
         .then(res => {
-            let json = JSON.parse(res)
-            gradesJson = json["data"]["Oceny"]
+            let resJson = JSON.parse(res)
+            json = resJson["data"]
         })
         .catch(error => {
-            loginProgressMessage.edit(error)
+            message.edit(error)
             throw error
         })
-
-    await loginProgressMessage.edit('Pobieranie danych... 99%')
-    return gradesJson;
+    return json
 }

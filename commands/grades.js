@@ -9,6 +9,7 @@ module.exports = {
         const utils = require('../utils')
 
         const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        message.channel.startTyping()
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {

@@ -8,6 +8,7 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
         const cheerio = require("cheerio")
+        message.channel.startTyping()
 
         function getTimetableFormattedText(json, dayOfWeek) {
             let timetableText = ""
@@ -95,9 +96,11 @@ module.exports = {
                 return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
             }).then(json => {
                 let day = getWeekDay(args[0], json)
+                message.channel.stopTyping()
                 loginProgressMessage.edit("Plan na dzień: " + weekDays[day] + "\n" + getTimetableFormattedText(json, day))
             })
         } else {
+            message.channel.stopTyping()
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

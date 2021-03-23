@@ -9,6 +9,7 @@ module.exports = {
         let commands = client.commands
         let comsOtherNames = []
         let comsVulcanNames = []
+        message.channel.startTyping()
         commands.forEach(command => {
             switch (command.category) { // tu kiedyś (hmm) będzie inaczej. Bedzie automatyczny system tworzenia kategorii, że jak stworzysz se nową komdę kategorii "Moderacja", czy coś, to nie będziesz musiał nic w helpie zmieniać
                 case "other":
@@ -63,6 +64,7 @@ module.exports = {
                     }
                 ]
             )
+            message.channel.stopTyping()
             await message.channel.send(helpEmbed);
         }
     }

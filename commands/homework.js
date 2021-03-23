@@ -9,6 +9,7 @@ module.exports = {
         const utils = require('../utils')
 
         const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        message.channel.startTyping()
 
         let homework = [], workDataText, workSubjectText, workDescriptionText, workTeacherText
 
@@ -27,11 +28,12 @@ module.exports = {
                         workDescriptionText = work["Description"] ? ` - ${work["Description"]}` : "(brak opisu)"
                         workTeacherText = `Nauczyciel: ${work["Teacher"].split(',')[0]}`
                         homework.push({
-                            name: workSubjectText+workDescriptionText,
+                            name: workSubjectText + workDescriptionText,
                             value: `${workDataText}\n${workTeacherText}`
                         })
                     })
                 })
+                message.channel.stopTyping()
                 loginProgressMessage.edit(utils.generateEmbed(
                     "Zadania domowe",
                     "Zadania domowe na najbliższy tydzień",
@@ -39,6 +41,7 @@ module.exports = {
                 ))
             })
         } else {
+            message.channel.stopTyping()
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

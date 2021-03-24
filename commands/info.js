@@ -2,11 +2,12 @@ module.exports = {
     name: "info",
     description: "Popokazuje informacje o bocie",
     aliases: ['informacje', 'stats'],
-    usage: 'info',
+    usage: ['info'],
     category: 'other',
     async execute(client, message) {
         const utils = require('../utils');
         const version = require('../package.json').version;
+      
         let totalSeconds = (client.uptime / 1000);
         let days = Math.floor(totalSeconds / 86400);
         totalSeconds %= 86400;
@@ -15,6 +16,7 @@ module.exports = {
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = Math.floor(totalSeconds % 60);
         let uptime = `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`
+        message.channel.startTyping()
         await message.channel.send(utils.generateEmbed(
             "Informacje o bocie",
             "",
@@ -40,5 +42,6 @@ module.exports = {
                 value: `${process.env.HOST}`
             }
             ]))
+        message.channel.stopTyping()
     }
 }

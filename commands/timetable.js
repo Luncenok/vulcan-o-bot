@@ -2,7 +2,7 @@ module.exports = {
     name: "timetable",
     description: "Pokazuje plan lekcji wybranego dnia lub na cały tydzień (domyślnie dzisiejszy plan)",
     aliases: ['plan', 'planlekcji'],
-    usage: ['timetable 12.01.2021', 'timetable 03-03-2020', 'timetable poniedziałek', 'timetable 4'],
+    usage: ['timetable', 'timetable 12-01-2021', 'timetable 3.3.2020', 'timetable poniedziałek', 'timetable 4'],
     category: 'vulcan',
     async execute(client, message, args) {
         const uonet = require('../uonet')

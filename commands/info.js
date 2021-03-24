@@ -7,7 +7,7 @@ module.exports = {
     async execute(client, message) {
         const utils = require('../utils');
         const version = require('../package.json').version;
-      
+
         let totalSeconds = (client.uptime / 1000);
         let days = Math.floor(totalSeconds / 86400);
         totalSeconds %= 86400;

@@ -2,7 +2,7 @@ module.exports = {
     name: "status",
     description: "Sprawdza czy vulcan działa czy może nie",
     aliases: ['dziala'],
-    usage: 'status',
+    usage: ['status'],
     category: 'vulcan',
     async execute(client, message) {
         const fetch = require('node-fetch')

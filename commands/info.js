@@ -2,11 +2,12 @@ module.exports = {
     name: "info",
     description: "Popokazuje informacje o bocie",
     aliases: ['informacje', 'stats'],
-    usage: 'info',
+    usage: ['info'],
     category: 'other',
     async execute(client, message) {
         const utils = require('../utils');
         const version = require('../package.json').version;
+        message.channel.startTyping()
         await message.channel.send(utils.generateEmbed(
             "Informacje o bocie",
             "",
@@ -26,5 +27,6 @@ module.exports = {
                 value: `${process.env.HOST}`
             }
             ]))
+        message.channel.stopTyping()
     }
 }

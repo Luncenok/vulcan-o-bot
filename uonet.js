@@ -146,7 +146,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
 module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], loginProgressMessage) => {
     try {
         let xvUrl = baseUrl
-        let response = "", resJson
+        let response = "", resJson = undefined
         await fetch(xvUrl, {
             method: 'get',
             headers: {'User-Agent': 'Mozilla/5.0', 'Cookie': cookies},
@@ -210,7 +210,7 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
         let idBiezacyUczen = resJson["data"][0]["IdUczen"]
         let idBiezacyDziennik = resJson["data"][0]["IdDziennik"]
         let rokSzkolny = resJson["data"][0]["DziennikRokSzkolny"]
-        let okresId
+        let okresId = -1
         resJson["data"][0]["Okresy"].forEach((okres) => {
             if (okres["IsLastOkres"]) okresId = okres["Id"]
         })
@@ -264,19 +264,7 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProg
 }
 
 module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl], data, loginProgressMessage) => {
-    /*
-    let timetableJson
-    let url = `${baseUrl}/PlanZajec.mvc/Get`
-    let data = new Date()
-    data.setDate(day)
-    let dayOfWeek = data.getDay()
-    if (dayOfWeek === 0 || dayOfWeek === 6) dayOfWeek = 1
-    data = data.toISOString().slice(0, 11) + '00:00:00'
-    const body = {
-        'data': data
-    }
-    */
-    let timetableJson
+    let timetableJson = undefined
     let url = `${baseUrl}/PlanZajec.mvc/Get`
     // parsowanie daty dla uoneta
     data = data.toISOString().slice(0, 11) + '00:00:00'
@@ -304,7 +292,7 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
         .then(res => {
             let json = JSON.parse(res)
             if (json["success"])
-                timetableJson = json["data"]["Rows"]
+                timetableJson = json["data"]
             else {
                 throw "No timetable data"
             }
@@ -320,7 +308,7 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
 
 module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
 
-    let examsJson
+    let examsJson = undefined
     let url = `${baseUrl}/Sprawdziany.mvc/Get`
     let data = new Date()
     data.setDate(day)
@@ -361,7 +349,7 @@ module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken
 
 module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
 
-    let homeworkJson
+    let homeworkJson = undefined
     let url = `${baseUrl}/Homework.mvc/Get`
     let data = new Date()
     data.setDate(day)
@@ -402,7 +390,7 @@ module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryTo
 
 module.exports.getGrades = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], day, loginProgressMessage) => {
 
-    let gradesJson
+    let gradesJson = undefined
     let url = `${baseUrl}/Oceny.mvc/Get`
     const body = {
         'okres': okresId

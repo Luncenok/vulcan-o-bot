@@ -30,6 +30,7 @@ module.exports = {
                 || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 
         if (!(helpCommand)&&(args[0])) {
+            message.channel.stopTyping()
             await message.channel.send(`Nieznana komenda \`${args[0]}\`.\nWpisz \`${client.config.prefix}help\`, by otrzymać listę komend i przydatne linki`)
         } else {
             const helpEmbed = (!(helpCommand)) ? utils.generateEmbed(

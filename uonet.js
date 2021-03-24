@@ -454,8 +454,9 @@ module.exports.getAttendance = async ([permissions, cookies, symbol, antiForgery
 
     await loginProgressMessage.edit('Pobieranie danych... 99%')
     return attendanceJson
-  
-module.exports.getGradesStatistics = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], day, loginProgressMessage) => { 
+}
+
+module.exports.getGradesStatistics = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], day, loginProgressMessage) => {
     try {
         let gradesStatisticsJson
         let url = `${baseUrl}/Statystyki.mvc/GetOcenyCzastkowe`

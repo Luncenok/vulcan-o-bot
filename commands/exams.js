@@ -44,6 +44,7 @@ module.exports = {
                         })
                     })
                 }
+                message.channel.stopTyping()
                 loginProgressMessage.edit(utils.generateEmbed(
                     "Sprawdziany",
                     "Sprawdziany, kartkówki i prace klasowe na najbliższe 4 tygodnie",
@@ -51,6 +52,7 @@ module.exports = {
                 ));
             })
         } else {
+            message.channel.stopTyping()
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

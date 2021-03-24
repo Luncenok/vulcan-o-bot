@@ -2,7 +2,6 @@ module.exports = {
     name: "timetable",
     description: "Pokazuje plan lekcji wybranego dnia lub na cały tydzień (domyślnie dzisiejszy plan)",
     aliases: ['plan', 'planlekcji'],
-    usage: 'timetable 08.03.2021',
     usage: ['timetable 12.01.2021', 'timetable 03-03-2020', 'timetable poniedziałek', 'timetable 4'],
     category: 'vulcan',
     async execute(client, message, args) {
@@ -27,8 +26,9 @@ module.exports = {
                 let dayText;
                 let day = getWeekDay(args[0], json["Rows"])
                 if (json["Headers"][day] !== undefined)
-                    dayText = json["Headers"][day]["Text"].split("<br />").join(" ");
+                    dayText = json["Headers"][1]["Text"].split("<br />").join(" ");
                 else dayText = weekDays[day];
+                message.channel.stopTyping()
                 loginProgressMessage.edit("Plan na dzień: " + dayText + "\n" + getTimetableFormattedText(json, day))
             })
         } else {
@@ -88,28 +88,6 @@ module.exports = {
                     if (salaPrzedmiotTab.join("") !== '') {
                         let salaPrzedmiotFormattedText = salaPrzedmiotTab.join("\t")
                         timetableText += salaPrzedmiotFormattedText + '\n'
-                    hoursString = hoursSplitted.join("\t")
-                    timetableText += hoursString + "\t"
-                }
-
-                if (lesson[dayOfWeek] === undefined) {
-                    timetableText = 'Brak lekcji tego dnia!'
-                    return
-                }
-
-                let $ = cheerio.load(lesson[dayOfWeek], {xmlMode: false})
-                let psalaSplitted = $.text().split("     ")
-                if (psalaSplitted.length < 2)
-                    psalaSplitted = $.text().split("    ")
-                if (psalaSplitted.length < 2)
-                    psalaSplitted = $.text().split("   ")
-                if (psalaSplitted.length < 2)
-                    psalaSplitted = $.text().split("  ")
-                if (psalaSplitted.length < 2) {
-                    let tab, tab2 = [], tab3 = []
-                    tab = $.text().split(" ")
-                    for (let i = 0; i < tab.length-1; i++) {
-                        tab2.push(tab[i])
                     }
                 }
             })
@@ -144,28 +122,6 @@ module.exports = {
                 gotDate = true
             }
             return day;
-        }
-
-        const dateRegex = /(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})/
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
-        var gotDate = false
-        const date = getDateFromFormat(args[0])
-
-        const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
-        if (loginMessage) {
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
-            }).then(pcsaavArray => {
-                return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
-            }).then(json => {
-                let day = getWeekDay(args[0], json)
-                message.channel.stopTyping()
-                loginProgressMessage.edit("Plan na dzień: " + weekDays[day] + "\n" + getTimetableFormattedText(json, day))
-            })
-        } else {
-            message.channel.stopTyping()
-            await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
-            await utils.removeFromDatabase(message.author.id)
         }
     }
 }

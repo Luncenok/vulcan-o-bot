@@ -123,6 +123,7 @@ module.exports = {
                         fieldsBez
                     )
                 }
+                message.channel.stopTyping()
                 if (message.channel.type === 'dm') loginProgressMessage.edit(embedZOcenami)
                 else {
                     loginProgressMessage.edit(embedBezOcen)
@@ -148,6 +149,7 @@ module.exports = {
                 }
             })
         } else {
+            message.channel.stopTyping()
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

@@ -7,6 +7,7 @@ module.exports = {
     async execute(client, message) {
         const utils = require('../utils');
         const version = require('../package.json').version;
+        message.channel.startTyping()
         await message.channel.send(utils.generateEmbed(
             "Informacje o bocie",
             "",
@@ -26,5 +27,6 @@ module.exports = {
                 value: `${process.env.HOST}`
             }
             ]))
+        message.channel.stopTyping()
     }
 }

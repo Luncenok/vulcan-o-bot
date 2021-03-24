@@ -9,6 +9,7 @@ module.exports = {
         const utils = require('../utils')
 
         const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        message.channel.startTyping()
 
         let exams = [], examDataText, examSubjectText, examDescriptionText, examTeacherText, examTypeText
         const examTypes = [

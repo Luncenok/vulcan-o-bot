@@ -6,7 +6,10 @@ module.exports = {
     category: 'other',
     async execute(client, message) {
         message.channel.startTyping()
-        const checkmessage = await message.channel.send('Sprawdzanie...');
+        let checkmessage
+        await message.channel.send('Sprawdzanie...').then(cMessage => {
+            checkmessage = cMessage
+        })
         const args = message.content.slice(client.config.prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
         const ping = Math.round(checkmessage.createdTimestamp - message.createdTimestamp)

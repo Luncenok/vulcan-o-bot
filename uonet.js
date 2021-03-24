@@ -54,7 +54,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
                     throw "Zła nazwa użytkownika lub hasło."
                 }
             })
-        loginProgressMessage.edit('Logowanie... 25%');
+        await loginProgressMessage.edit('Logowanie... 25%');
 
         let wa, wctx, wresult, wctxEscaped, wresultEscaped
         let fslsRes = ""
@@ -88,7 +88,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
         wresultEscaped = encodeURIComponent(wresult)
         wctxEscaped = encodeURIComponent(wctx)
 
-        loginProgressMessage.edit('Logowanie... 50%');
+        await loginProgressMessage.edit('Logowanie... 50%');
 
         const loginBody = `wa=${wa}&wresult=${wresultEscaped}&wctx=${wctxEscaped}`
         await fetch(wctx, {
@@ -119,7 +119,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
                     throw "Podany identyfikator klienta (symbol) jest niepoprawny."
                 }
             })
-        loginProgressMessage.edit('Logowanie... 75%');
+        await loginProgressMessage.edit('Logowanie... 75%');
 
         let startMvcRes = ""
         const startmvcUrl = `https://uonetplus.vulcan.net.pl/${symbol}/Start.mvc/Index`
@@ -140,7 +140,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
         permissions = permraw.substr(permraw.search('(permissions: )'), 1000).split("'", 2)[1]
         console.log(`Logged in: user id: ${loginMessage.author.id} permissions length: ${permissions.length} cookies length: ${cookies.length}`)
 
-        loginProgressMessage.edit('Zalogowano! Pobieranie danych... 0%');
+        await loginProgressMessage.edit('Zalogowano! Pobieranie danych... 0%');
 
         return [permissions, cookies, symbol, baseUrl]
     } catch (error) {
@@ -178,7 +178,7 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
             }).join(';');
             cookies += cookieString
         })
-        loginProgressMessage.edit("Pobieranie danych... 25%")
+        await loginProgressMessage.edit("Pobieranie danych... 25%")
 
         await fetch(`${baseUrl}/Start`, {
             method: 'get',
@@ -200,7 +200,7 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
             .then(res => {
                 response = res
             })
-        loginProgressMessage.edit("Pobieranie danych... 50%")
+        await loginProgressMessage.edit("Pobieranie danych... 50%")
 
         await fetch(`${baseUrl}/UczenDziennik.mvc/Get`, {
             method: 'get',
@@ -222,7 +222,7 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
             .then(res => {
                 resJson = JSON.parse(res)
             })
-        loginProgressMessage.edit("Pobieranie danych... 75%")
+        await loginProgressMessage.edit("Pobieranie danych... 75%")
 
         let idBiezacyUczen = resJson["data"][0]["IdUczen"]
         let idBiezacyDziennik = resJson["data"][0]["IdDziennik"]
@@ -301,7 +301,7 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol, baseUrl], 
  * @param {string[]} loginInfoArray Array with all data needed to get any information from vulcan uonet+
  * @param {Date} date Date of the timetable
  * @param {Discord.Message} loginProgressMessage Message with progress in percents
- * @returns {Promise<string|undefined>} Json with information about timetable ready to parse
+ * @returns {Promise<Object|undefined>} Json with information about timetable ready to parse
  */
 module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], date, loginProgressMessage) => {
     try {

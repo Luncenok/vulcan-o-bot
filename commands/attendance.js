@@ -8,7 +8,10 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
 
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {

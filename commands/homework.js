@@ -8,7 +8,10 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
 
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
         message.channel.startTyping()
 
         let homework = [], workDataText, workSubjectText, workDescriptionText, workTeacherText
@@ -34,9 +37,12 @@ module.exports = {
                     })
                 })
                 message.channel.stopTyping()
+                let description = "Zadania domowe na najbliższy tydzień: "
+                console.log(homework.length)
+                if (homework.length <= 0) description += "Brak!"
                 loginProgressMessage.edit(utils.generateEmbed(
                     "Zadania domowe",
-                    "Zadania domowe na najbliższy tydzień",
+                    description,
                     homework
                 ))
             })

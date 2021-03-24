@@ -8,7 +8,10 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
 
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
         message.channel.startTyping()
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
@@ -143,7 +146,7 @@ module.exports = {
                                 loginProgressMessage.edit(embedUkryty)
                             }
                         })
-                        .catch(collected => {
+                        .catch(() => {
                             loginProgressMessage.edit(embedCzas)
                         })
                 }

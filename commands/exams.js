@@ -8,7 +8,10 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
 
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
         message.channel.startTyping()
 
         let exams = [], examDataText, examSubjectText, examDescriptionText, examTeacherText, examTypeText
@@ -27,7 +30,7 @@ module.exports = {
                 return uonet.getExams(loginInfo, day, loginProgressMessage)
             }).then(json => {
                 // ponieważ getExamsFormattedText jest wywoływane tylko w exams.js, to przeniosłem jego funkcjonalność do exams.js
-                for (var week of json) {
+                for (let week of json) {
                     week["SprawdzianyGroupedByDayList"].forEach(day => {
                         day["Sprawdziany"].forEach(exam => {
                             examDataText = `Dzień: ${day["Data"].split(' ')[0]}`;

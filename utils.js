@@ -52,7 +52,7 @@ module.exports.removeFromDatabase = async (userId) => {
  * @author Łukasz Szczyt
  * @param {string} title Title of generated embed
  * @param {string} description Description of generated embed
- * @param {Object} fields Fields of generated embed
+ * @param {Array.<Object>} fields Fields of generated embed
  * @param {string} fields.name Subtitle of field
  * @param {string} fields.value value of field
  * @todo icon get from assets folder, not from url

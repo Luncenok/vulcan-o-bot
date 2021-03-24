@@ -16,7 +16,10 @@ module.exports = {
         const Keyv = require("keyv")
         const keyv = new Keyv(process.env.PATH_TO_DATABASE)
 
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
         message.channel.startTyping()
         let email = args[0], password = args[1], symbol = args[2], prefix = process.env.PREFIX
 

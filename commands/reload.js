@@ -2,7 +2,7 @@ module.exports = {
     name: "reload",
     description: "Ponownie wczytuje wszystkie komendy|komende. Jak nazwa wskazuje, ładuje tylko komendy, które były już załadowane. Aby załadować nowo dodaną komenda, należy wpisać bez argumentów. Wtedy cały folder commands zostanie ponownie załadowany",
     aliases: ['renew', 'f5'],
-    usage: ['reload login', 'reload help'],
+    usage: ['reload', 'reload help'],
     category: 'develop',
     async execute(client, message, args) {
         const fs = require('fs');

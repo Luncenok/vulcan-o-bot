@@ -1,7 +1,7 @@
 module.exports = {
     name: "classgrades",
     description: "Pokazuje ucznia na tle klasy",
-    aliases: ['uczennatleklasy', 'klasa', 'ocenyklasy', ''],
+    aliases: ['uczennatleklasy', 'klasa', 'ocenyklasy'],
     usage: ['classgrades', 'classgrades matematyka', 'classgrades język angielski'],
     category: 'vulcan',
     async execute(client, message, args) {

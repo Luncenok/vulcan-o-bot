@@ -3,7 +3,6 @@ const cheerio = require('cheerio')
 const utils = require('./utils')
 
 module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
-
     try {
         let ciasteczka = ""
         let permissions
@@ -232,7 +231,6 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
 }
 
 module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProgressMessage) => {
-
     let luckyNumberText = ""
     let url = `https://uonetplus.vulcan.net.pl/${symbol}/Start.mvc/GetKidsLuckyNumbers`
     const body = {
@@ -307,7 +305,6 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
 }
 
 module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
-
     let examsJson = undefined
     let url = `${baseUrl}/Sprawdziany.mvc/Get`
     let data = new Date()
@@ -348,7 +345,6 @@ module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken
 }
 
 module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
-
     let homeworkJson = undefined
     let url = `${baseUrl}/Homework.mvc/Get`
     let data = new Date()
@@ -389,7 +385,6 @@ module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryTo
 }
 
 module.exports.getGrades = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], day, loginProgressMessage) => {
-
     let gradesJson = undefined
     let url = `${baseUrl}/Oceny.mvc/Get`
     const body = {
@@ -425,8 +420,42 @@ module.exports.getGrades = async ([permissions, cookies, symbol, antiForgeryToke
     return gradesJson;
 }
 
-module.exports.getGradesStatistics = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], day, loginProgressMessage) => {
+module.exports.getAttendance = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
+    let attendanceJson
+    let url = `${baseUrl}/FrekwencjaStatystyki.mvc/Get`
+    const body = {
+        'idPrzedmiot': -1,
+    }
 
+    await fetch(url, {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {
+            'Cookie': cookies,
+            'User-Agent': 'Mozilla/5.0',
+            'Content-Type': 'application/json',
+            'x-requested-with': 'XMLHttpRequest',
+            'x-v-appguid': appGuid,
+            'x-v-appversion': version,
+            'x-v-requestverificationtoken': antiForgeryToken
+        },
+        follow: 0,
+        redirect: 'manual'
+    })
+        .then(res => res.text())
+        .then(res => {
+            let json = JSON.parse(res)
+            attendanceJson = json["data"]
+        })
+        .catch(error => {
+            loginProgressMessage.edit(error)
+            throw error
+        })
+
+    await loginProgressMessage.edit('Pobieranie danych... 99%')
+    return attendanceJson
+  
+module.exports.getGradesStatistics = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], day, loginProgressMessage) => { 
     try {
         let gradesStatisticsJson
         let url = `${baseUrl}/Statystyki.mvc/GetOcenyCzastkowe`

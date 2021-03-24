@@ -18,10 +18,10 @@ module.exports = {
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
-            }).then(pcsaavArray => {
-                return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
+                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
+            }).then(loginInfo => {
+                return uonet.getTimetable(loginInfo, date, loginProgressMessage)
             }).then(json => {
                 let dayText;
                 let day = getWeekDay(args[0], json["Rows"])

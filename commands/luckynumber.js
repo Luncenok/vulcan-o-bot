@@ -13,8 +13,8 @@ module.exports = {
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getLuckyNumber(permcookiesymbolArray, loginProgressMessage)
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookiesSymbolUrl) => {
+                return uonet.getLuckyNumber(permsCookiesSymbolUrl, loginProgressMessage)
             }).then(luckyNumberText => {
                 message.channel.stopTyping()
                 loginProgressMessage.edit(utils.generateEmbed(

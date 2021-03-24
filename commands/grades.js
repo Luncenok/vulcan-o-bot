@@ -15,10 +15,10 @@ module.exports = {
         if (loginMessage) {
             let embedZOcenami, embedBezOcen, embedUkryty, embedCzas
             const day = new Date().getDate()
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
-            }).then(pcsaavArray => {
-                return uonet.getGrades(pcsaavArray, day, loginProgressMessage)
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
+                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
+            }).then(loginInfo => {
+                return uonet.getGrades(loginInfo, day, loginProgressMessage)
             }).then(json => {
                 let nazwaPrzedmiotu = args.join(" ").toLowerCase()
                 let wybranyPrzedmiot = ""

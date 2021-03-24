@@ -67,7 +67,7 @@ If you ever forget a command, use ?help
 
 #### reload
 
-to get more info about specifed command please type: `?help command`. For example: `?help login`
+to get more info about specified command please type: `?help command`. For example: `?help login`
 
 ## Installation
 

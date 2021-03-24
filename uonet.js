@@ -3,7 +3,6 @@ const cheerio = require('cheerio')
 const utils = require('./utils')
 
 module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
-
     try {
         let ciasteczka = ""
         let permissions
@@ -146,7 +145,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
 module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], loginProgressMessage) => {
     try {
         let xvUrl = baseUrl
-        let response = "", resJson
+        let response = "", resJson = undefined
         await fetch(xvUrl, {
             method: 'get',
             headers: {'User-Agent': 'Mozilla/5.0', 'Cookie': cookies},
@@ -210,7 +209,7 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
         let idBiezacyUczen = resJson["data"][0]["IdUczen"]
         let idBiezacyDziennik = resJson["data"][0]["IdDziennik"]
         let rokSzkolny = resJson["data"][0]["DziennikRokSzkolny"]
-        let okresId
+        let okresId = -1
         resJson["data"][0]["Okresy"].forEach((okres) => {
             if (okres["IsLastOkres"]) okresId = okres["Id"]
         })
@@ -232,7 +231,6 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
 }
 
 module.exports.getLuckyNumber = async ([permissions, cookies, symbol], loginProgressMessage) => {
-
     let luckyNumberText = ""
     let url = `https://uonetplus.vulcan.net.pl/${symbol}/Start.mvc/GetKidsLuckyNumbers`
     const body = {
@@ -379,4 +377,82 @@ async function fetchData(url, body, headers, message) {
             throw error
         })
     return json
+}
+
+module.exports.getAttendance = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny], day, loginProgressMessage) => {
+    let attendanceJson
+    let url = `${baseUrl}/FrekwencjaStatystyki.mvc/Get`
+    const body = {
+        'idPrzedmiot': -1,
+    }
+
+    await fetch(url, {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {
+            'Cookie': cookies,
+            'User-Agent': 'Mozilla/5.0',
+            'Content-Type': 'application/json',
+            'x-requested-with': 'XMLHttpRequest',
+            'x-v-appguid': appGuid,
+            'x-v-appversion': version,
+            'x-v-requestverificationtoken': antiForgeryToken
+        },
+        follow: 0,
+        redirect: 'manual'
+    })
+        .then(res => res.text())
+        .then(res => {
+            let json = JSON.parse(res)
+            attendanceJson = json["data"]
+        })
+        .catch(error => {
+            loginProgressMessage.edit(error)
+            throw error
+        })
+
+    await loginProgressMessage.edit('Pobieranie danych... 99%')
+    return attendanceJson
+}
+
+module.exports.getGradesStatistics = async ([permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId], day, loginProgressMessage) => {
+    try {
+        let gradesStatisticsJson
+        let url = `${baseUrl}/Statystyki.mvc/GetOcenyCzastkowe`
+        const body = {
+            'idOkres': okresId
+        }
+
+        await fetch(url, {
+            method: 'post',
+            body: JSON.stringify(body),
+            headers: {
+                'Cookie': cookies,
+                'User-Agent': 'Mozilla/5.0',
+                'Content-Type': 'application/json',
+                'x-requested-with': 'XMLHttpRequest',
+                'x-v-appguid': appGuid,
+                'x-v-appversion': version,
+                'x-v-requestverificationtoken': antiForgeryToken
+            },
+            follow: 0,
+            redirect: 'manual'
+        })
+            .then(res => res.text())
+            .then(res => {
+                let json = JSON.parse(res)
+                gradesStatisticsJson = json["data"]
+            })
+            .catch(error => {
+                loginProgressMessage.edit(error)
+                throw error
+            })
+
+        await loginProgressMessage.edit('Pobieranie danych... 99%')
+        return gradesStatisticsJson;
+    } catch (error) {
+        console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
+        await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
+        return [undefined, undefined, undefined, undefined]
+    }
 }

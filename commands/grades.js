@@ -8,17 +8,20 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
 
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
         message.channel.startTyping()
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
             let embedZOcenami, embedBezOcen, embedUkryty, embedCzas
             const day = new Date().getDate()
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
-            }).then(pcsaavArray => {
-                return uonet.getGrades(pcsaavArray, day, loginProgressMessage)
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
+                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
+            }).then(loginInfo => {
+                return uonet.getGrades(loginInfo, day, loginProgressMessage)
             }).then(json => {
                 let nazwaPrzedmiotu = args.join(" ").toLowerCase()
                 let wybranyPrzedmiot = ""
@@ -143,7 +146,7 @@ module.exports = {
                                 loginProgressMessage.edit(embedUkryty)
                             }
                         })
-                        .catch(collected => {
+                        .catch(() => {
                             loginProgressMessage.edit(embedCzas)
                         })
                 }

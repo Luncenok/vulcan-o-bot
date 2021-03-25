@@ -8,13 +8,16 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
 
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
         message.channel.startTyping()
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getLuckyNumber(permcookiesymbolArray, loginProgressMessage)
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookiesSymbolUrl) => {
+                return uonet.getLuckyNumber(permsCookiesSymbolUrl, loginProgressMessage)
             }).then(luckyNumberText => {
                 message.channel.stopTyping()
                 loginProgressMessage.edit(utils.generateEmbed(

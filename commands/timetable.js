@@ -11,17 +11,20 @@ module.exports = {
         message.channel.startTyping()
 
         const weekDays = ["", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
-        const dateRegex = /(?:(?:31([\/\-.])(?:0?[13578]|1[02]))\1|(?:(?:29|30)([\/\-.])(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29([\/\-.])0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])([\/\-.])(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})/
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        const dateRegex = /(?:(?:31([\/\-.])(?:0?[13578]|1[02]))\1|(?:(?:29|30)([\/\-.])(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29([\/\-.])0?2\3(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))$|^(?:0?[1-9]|1\d|2[0-8])([\/\-.])(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})/
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
         let gotDate = false;
         const date = getDateFromFormat(args[0])
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
-            }).then(pcsaavArray => {
-                return uonet.getTimetable(pcsaavArray, date, loginProgressMessage)
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
+                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
+            }).then(loginInfo => {
+                return uonet.getTimetable(loginInfo, date, loginProgressMessage)
             }).then(json => {
                 let dayText;
                 let day = getWeekDay(args[0], json["Rows"])

@@ -8,7 +8,10 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
 
-        const loginProgressMessage = await message.channel.send("Logowanie... 0%")
+        let loginProgressMessage;
+        await message.channel.send("Logowanie... 0%").then(lpMessage => {
+            loginProgressMessage = lpMessage
+        })
         message.channel.startTyping()
 
         let exams = [], examDataText, examSubjectText, examDescriptionText, examTeacherText, examTypeText
@@ -21,22 +24,22 @@ module.exports = {
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
             const day = new Date().getDate()
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permcookiesymbolArray) => {
-                return uonet.getXVHeaders(permcookiesymbolArray, loginProgressMessage)
-            }).then(pcsaavArray => {
-                return uonet.getExams(pcsaavArray, day, loginProgressMessage)
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
+                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
+            }).then(loginInfo => {
+                return uonet.getExams(loginInfo, day, loginProgressMessage)
             }).then(json => {
                 // ponieważ getExamsFormattedText jest wywoływane tylko w exams.js, to przeniosłem jego funkcjonalność do exams.js
-                for (var week of json) {
+                for (let week of json) {
                     week["SprawdzianyGroupedByDayList"].forEach(day => {
                         day["Sprawdziany"].forEach(exam => {
                             examDataText = `Dzień: ${day["Data"].split(' ')[0]}`;
                             examSubjectText = exam["DisplayValue"]
                             examDescriptionText = exam["Opis"] ? ` - ${exam["Opis"]}` : ""
                             examTeacherText = `Nauczyciel: ${exam["PracownikModyfikujacyDisplay"]}`
-                            examTypeText = examTypes[exam["Rodzaj"]-1] ? `Rodzaj: ${examTypes[exam["Rodzaj"]-1]}` : "*Nieznany rodzaj lub błąd rodzaju*"
+                            examTypeText = examTypes[exam["Rodzaj"] - 1] ? `Rodzaj: ${examTypes[exam["Rodzaj"] - 1]}` : "*Nieznany rodzaj lub błąd rodzaju*"
                             exams.push({
-                                name: examSubjectText+examDescriptionText,
+                                name: examSubjectText + examDescriptionText,
                                 value: `${examDataText}\n${examTeacherText}\n${examTypeText}`
                                 // name: `${examDataText}`,
                                 // value: `${examSubjectText}${examDescriptionText}\n${examTeacherText}\n${examTypeText}`

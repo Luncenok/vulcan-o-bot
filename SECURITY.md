@@ -14,7 +14,7 @@ Thank you for improving the security. We appreciate your efforts and
 responsible disclosure and will make every effort to acknowledge your
 contributions.
 
-Report security bugs by emailing the maintainers at idziejczak3@gmail.com or [kasza email here].
+Report security bugs by emailing the maintainers at idziejczak3@gmail.com or kaszotto.gryczanotto@gmail.com.
 
 The maintainers will acknowledge your email within 7 days, and will send a
 more detailed response within 7 days indicating the next steps in handling

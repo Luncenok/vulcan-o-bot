@@ -44,6 +44,26 @@ module.exports.getLoginMessageOrUndefined = async (author) => {
  */
 module.exports.removeFromDatabase = async (userId) => {
     await keyv.delete(userId)
+    await keyv.delete(`${userId}-uczenId-rok`)
+}
+
+/**
+ * Gets UczenId and rok or returns undefined
+ * @param {string} userId Id of user
+ * @returns {Promise<string|undefined>}
+ */
+module.exports.getUczenIdRokOrUndefined = async (userId) => {
+    return await keyv.get(`${userId}-uczenId-rok`);
+}
+
+/**
+ * Pushes uczenId into database
+ * @param {string} userId Id of user
+ * @param {Object} uczen Object of student
+ * @returns {Promise<boolean>}
+ */
+module.exports.setUczenId = async (userId, uczen) => {
+    return await keyv.set(`${userId}-uczenId-rok`, `${uczen["IdUczen"]}-${uczen["DziennikRokSzkolny"]}`);
 }
 
 /**

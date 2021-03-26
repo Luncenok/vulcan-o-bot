@@ -142,26 +142,6 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
 
         await loginProgressMessage.edit('Zalogowano! Pobieranie danych... 0%');
 
-        return [permissions, cookies, symbol, baseUrl]
-    } catch (error) {
-        console.log(`!error! user id: ${loginMessage.author.id} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
-        await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
-    }
-}
-
-/**
- * Gets all data needed to get any information from vulcan uonet+
- * @author Mateusz Idziejczak
- * @param {string} permissions String with encoded json needed to login
- * @param {string} cookies Cookies
- * @param {string} symbol Symbol of vulcan register
- * @param {string} baseUrl Base url with symbol and number of unit
- * @param {Discord.Message} loginProgressMessage Message with progress in percents
- * @returns {Promise<string[]>}
- */
-module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], loginProgressMessage) => {
-    try {
         let xvUrl = baseUrl
         let response = "", resJson = undefined
         await fetch(xvUrl, {
@@ -224,15 +204,44 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
             })
         await loginProgressMessage.edit("Pobieranie danych... 75%")
 
-        let idBiezacyUczen = resJson["data"][0]["IdUczen"]
-        let idBiezacyDziennik = resJson["data"][0]["IdDziennik"]
-        let rokSzkolny = resJson["data"][0]["DziennikRokSzkolny"]
+        let uczenIdRok = await utils.getUczenIdRokOrUndefined(loginMessage.author.id)
+        if (uczenIdRok === undefined) uczenIdRok = ""
+        let uczenId = uczenIdRok.split('-')[0]
+        let rok = uczenIdRok.split('-')[1]
+        let index = -1, maxi = -1
+        let studentNames = ""
+        resJson["data"].reverse().forEach((uczen, i) => {
+            studentNames += `${i}: ${uczen["UczenPelnaNazwa"]}\n`
+            if (`${uczen["IdUczen"]}` === uczenId && `${uczen["DziennikRokSzkolny"]}` === rok) index = i
+            maxi = i
+        })
+        studentNames += "```"
+        if (index === -1) {
+            const filter = m => parseInt(m.content) >= 0 && parseInt(m.content) <= maxi && m.author.id === loginMessage.author.id;
+
+            await loginProgressMessage.channel.send(`\`\`\`Wybierz ucznia: \n${studentNames}`)
+            await loginProgressMessage.channel.awaitMessages(filter, {max: 1, time: 30000, errors: ['time']})
+                .then(collected => {
+                    return parseInt(collected.first().content)
+                })
+                .then(ind => {
+                    index = ind
+                    utils.setUczenId(loginMessage.author.id, resJson["data"][index])
+                    loginProgressMessage.channel.send(`Wybrano ucznia ${resJson["data"][index]["UczenPelnaNazwa"]}`);
+                })
+                .catch(() => {
+                    throw 'Nie wybrano ucznia. Anulowano logowanie'
+                });
+        }
+        let idBiezacyUczen = resJson["data"][index]["IdUczen"]
+        let idBiezacyDziennik = resJson["data"][index]["IdDziennik"]
+        let rokSzkolny = resJson["data"][index]["DziennikRokSzkolny"]
         let okresId = -1
-        resJson["data"][0]["Okresy"].forEach((okres) => {
+        resJson["data"][index]["Okresy"].forEach((okres) => {
             if (okres["IsLastOkres"]) okresId = okres["Id"]
         })
 
-        let $ = cheerio.load(response, {xmlMode: false})
+        $ = cheerio.load(response, {xmlMode: false})
         let raw = $.html()
         let antiForgeryToken = raw.substr(raw.search('(antiForgeryToken: )'), 200).split("'", 2)[1]
         let appGuid = raw.substr(raw.search('(appGuid: )'), 100).split("'", 2)[1]
@@ -242,8 +251,8 @@ module.exports.getXVHeaders = async ([permissions, cookies, symbol, baseUrl], lo
 
         return [permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId]
     } catch (error) {
-        console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
+        console.log(`!error! login error: ${error}`)
+        loginProgressMessage.channel.stopTyping(true)
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
     }
 }
@@ -290,7 +299,7 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol, baseUrl], 
         return luckyNumberText
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
+        loginProgressMessage.channel.stopTyping(true)
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
     }
 }
@@ -327,7 +336,7 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
+        loginProgressMessage.channel.stopTyping(true)
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -368,7 +377,7 @@ module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
+        loginProgressMessage.channel.stopTyping(true)
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -409,7 +418,7 @@ module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryTo
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
+        loginProgressMessage.channel.stopTyping(true)
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -446,7 +455,7 @@ module.exports.getGrades = async ([permissions, cookies, symbol, antiForgeryToke
         return json["Oceny"];
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
+        loginProgressMessage.channel.stopTyping(true)
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -483,7 +492,7 @@ module.exports.getAttendance = async ([permissions, cookies, symbol, antiForgery
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
+        loginProgressMessage.channel.stopTyping(true)
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -519,7 +528,7 @@ module.exports.getGradesStatistics = async ([permissions, cookies, symbol, antiF
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping()
+        loginProgressMessage.channel.stopTyping(true)
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -549,7 +558,7 @@ async function fetchData(url, body, headers, message) {
             json = resJson["data"]
         })
         .catch(error => {
-            message.channel.stopTyping()
+            message.channel.stopTyping(true)
             message.edit(error)
             throw error
         })

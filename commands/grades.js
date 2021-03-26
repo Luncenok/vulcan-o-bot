@@ -18,9 +18,7 @@ module.exports = {
         if (loginMessage) {
             let embedZOcenami, embedBezOcen, embedUkryty, embedCzas
             const day = new Date().getDate()
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
-                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
-            }).then(loginInfo => {
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then(loginInfo => {
                 return uonet.getGrades(loginInfo, day, loginProgressMessage)
             }).then(json => {
                 let nazwaPrzedmiotu = args.join(" ").toLowerCase()
@@ -126,7 +124,7 @@ module.exports = {
                         fieldsBez
                     )
                 }
-                message.channel.stopTyping()
+                message.channel.stopTyping(true)
                 if (message.channel.type === 'dm') loginProgressMessage.edit(embedZOcenami)
                 else {
                     loginProgressMessage.edit(embedBezOcen)
@@ -152,7 +150,7 @@ module.exports = {
                 }
             })
         } else {
-            message.channel.stopTyping()
+            message.channel.stopTyping(true)
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

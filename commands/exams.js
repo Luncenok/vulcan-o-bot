@@ -24,9 +24,7 @@ module.exports = {
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
             const day = new Date().getDate()
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
-                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
-            }).then(loginInfo => {
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then(loginInfo => {
                 return uonet.getExams(loginInfo, day, loginProgressMessage)
             }).then(json => {
                 // ponieważ getExamsFormattedText jest wywoływane tylko w exams.js, to przeniosłem jego funkcjonalność do exams.js
@@ -47,7 +45,7 @@ module.exports = {
                         })
                     })
                 }
-                message.channel.stopTyping()
+                message.channel.stopTyping(true)
                 loginProgressMessage.edit(utils.generateEmbed(
                     "Sprawdziany",
                     "Sprawdziany, kartkówki i prace klasowe na najbliższe 4 tygodnie",
@@ -55,7 +53,7 @@ module.exports = {
                 ));
             })
         } else {
-            message.channel.stopTyping()
+            message.channel.stopTyping(true)
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

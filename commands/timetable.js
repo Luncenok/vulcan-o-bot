@@ -21,9 +21,7 @@ module.exports = {
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
-                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
-            }).then(loginInfo => {
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then(loginInfo => {
                 return uonet.getTimetable(loginInfo, date, loginProgressMessage)
             }).then(json => {
                 let dayText;
@@ -31,10 +29,11 @@ module.exports = {
                 if (json["Headers"][day] !== undefined)
                     dayText = json["Headers"][1]["Text"].split("<br />").join(" ");
                 else dayText = weekDays[day];
-                message.channel.stopTyping()
+                message.channel.stopTyping(true)
                 loginProgressMessage.edit("Plan na dzień: " + dayText + "\n" + getTimetableFormattedText(json, day))
             })
         } else {
+            loginProgressMessage.channel.stopTyping(true)
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }
@@ -104,7 +103,11 @@ module.exports = {
             } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
                 return parseInt(arg)
             } else if (gotDate) {
-                return day.getDay()
+                if (day.getDay() === 0) {
+                    return 7
+                } else {
+                    return day.getDay()
+                }
             } else {
                 let last
                 for (let lesson of json.reverse()) {
@@ -114,7 +117,11 @@ module.exports = {
                     }
                 }
                 json.reverse()
-                return (day.getDay() === 0 || day.getDay() === 6 ? 1 : day.getDay() + Number(day.getHours() + day.getMinutes() / 100 >= last))
+                if (day.getDay() === 0 || day.getDay() === 6) {
+                    return 1
+                } else {
+                    return day.getDay() + Number(day.getHours() + day.getMinutes() / 100 >= last)
+                }
             }
         }
 

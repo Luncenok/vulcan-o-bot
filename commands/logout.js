@@ -5,11 +5,8 @@ module.exports = {
     usage: ['logout'],
     category: 'vulcan',
     async execute(client, message) {
-
-        const Keyv = require("keyv")
-        const keyv = new Keyv(process.env.PATH_TO_DATABASE)
-
-        await keyv.delete(message.author.id)
+        const utils = require('../utils')
+        await utils.removeFromDatabase(message.author.id)
         await message.reply("Zostałeś wylogowany")
     }
 }

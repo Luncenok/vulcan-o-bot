@@ -42,6 +42,6 @@ module.exports = {
                 value: `${process.env.HOST}`
             }
             ]))
-        message.channel.stopTyping()
+        message.channel.stopTyping(true)
     }
 }

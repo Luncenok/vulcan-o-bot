@@ -86,7 +86,7 @@ module.exports = {
         if (cufsWorking && uczenWorking)
             embed.embed.color = "#9cfc9c"
         else embed.embed.color = "#e73f48"
-        message.channel.stopTyping()
+        message.channel.stopTyping(true)
         await message.channel.send(embed)
     }
 }

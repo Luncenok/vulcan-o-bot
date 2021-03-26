@@ -24,9 +24,9 @@ module.exports = {
         let email = args[0], password = args[1], symbol = args[2], prefix = process.env.PREFIX
 
         if (email && password && symbol)
-            uonet.loginLogOn(message, loginProgressMessage).then(permsCookieSymbolUrl => {
-                if (permsCookieSymbolUrl[0] && permsCookieSymbolUrl[1]) {
-                    message.channel.stopTyping()
+            uonet.loginLogOn(message, loginProgressMessage).then(loginInfo => {
+                if (loginInfo) {
+                    message.channel.stopTyping(true)
                     loginProgressMessage.edit(
                         `Zalogowano! Zapisano id wiadomości z danymi logowania: ${message.id}\n` +
                         `Aby się wylogować - usuń wiadomość lub napisz \`${prefix}wyloguj\`\n` +
@@ -38,7 +38,7 @@ module.exports = {
                 }
             })
         else {
-            message.channel.stopTyping()
+            message.channel.stopTyping(true)
             loginProgressMessage.edit(`Nieprawidłowe użycie komendy. Prawidłowe użycie: \`${process.env.PREFIX}${this.usage}\``)
         }
     }

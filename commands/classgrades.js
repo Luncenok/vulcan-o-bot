@@ -16,9 +16,7 @@ module.exports = {
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
             const day = new Date().getDate()
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
-                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
-            }).then(loginInfo => {
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then(loginInfo => {
                 return uonet.getGradesStatistics(loginInfo, day, loginProgressMessage)
             }).then(json => {
                 let nazwaPrzedmiotu = args.join(" ").toLowerCase()
@@ -70,6 +68,7 @@ module.exports = {
                 ));
             })
         } else {
+            loginProgressMessage.channel.stopTyping(true)
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

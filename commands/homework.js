@@ -19,9 +19,7 @@ module.exports = {
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
             const day = new Date().getDate()
-            await uonet.loginLogOn(loginMessage, loginProgressMessage).then((permsCookieSymbolUrl) => {
-                return uonet.getXVHeaders(permsCookieSymbolUrl, loginProgressMessage)
-            }).then(loginInfo => {
+            await uonet.loginLogOn(loginMessage, loginProgressMessage).then(loginInfo => {
                 return uonet.getHomework(loginInfo, day, loginProgressMessage)
             }).then(json => {
                 json.forEach(day => {
@@ -36,9 +34,8 @@ module.exports = {
                         })
                     })
                 })
-                message.channel.stopTyping()
+                message.channel.stopTyping(true)
                 let description = "Zadania domowe na najbliższy tydzień: "
-                console.log(homework.length)
                 if (homework.length <= 0) description += "Brak!"
                 loginProgressMessage.edit(utils.generateEmbed(
                     "Zadania domowe",
@@ -47,7 +44,7 @@ module.exports = {
                 ))
             })
         } else {
-            message.channel.stopTyping()
+            message.channel.stopTyping(true)
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

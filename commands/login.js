@@ -31,7 +31,7 @@ module.exports = {
                         `Zalogowano! Zapisano id wiadomości z danymi logowania: ${message.id}\n` +
                         `Aby się wylogować - usuń wiadomość lub napisz \`${prefix}wyloguj\`\n` +
                         `Przypominamy: Ze względów bezpieczeństwa nie przechowujemy haseł ani emailów w bazie danych. ` +
-                        `Jedyne co przechowujemy to id twojej wiadomości z danymi :slight_smile:`
+                        `Jedyne co przechowujemy to: id twojej wiadomości z danymi, id wybranego ucznia i rok do którego jest przypisany. :slight_smile:`
                     )
                     console.log(`message id: ${message.id}`)
                     keyv.set(message.author.id, message.id)

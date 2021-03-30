@@ -555,6 +555,7 @@ async function fetchData(url, body, headers, message) {
         .then(res => res.text())
         .then(res => {
             let resJson = JSON.parse(res)
+            if (!(resJson["success"])) throw resJson["feedback"]["Message"]
             json = resJson["data"]
         })
         .catch(error => {

@@ -25,12 +25,18 @@ module.exports = {
                 return uonet.getTimetable(loginInfo, date, loginProgressMessage)
             }).then(json => {
                 let dayText;
-                let day = getWeekDay(args[0], json["Rows"])
-                if (json["Headers"][day] !== undefined)
-                    dayText = json["Headers"][1]["Text"].split("<br />").join(" ");
-                else dayText = weekDays[day];
-                message.channel.stopTyping(true)
-                loginProgressMessage.edit("Plan na dzień: " + dayText + "\n" + getTimetableFormattedText(json, day))
+                console.log(json)
+                if (json !== undefined) {
+                    let day = getWeekDay(args[0], json["Rows"])
+                    if (json["Headers"][day] !== undefined)
+                        dayText = json["Headers"][1]["Text"].split("<br />").join(" ");
+                    else dayText = weekDays[day];
+                    message.channel.stopTyping(true)
+                    loginProgressMessage.edit("Plan na dzień: " + dayText + "\n" + getTimetableFormattedText(json, day))
+                } else {
+                    message.channel.stopTyping(true)
+                    loginProgressMessage.edit("\`\`\`Nie wykryto planu lekcji\`\`\`")
+                }
             })
         } else {
             loginProgressMessage.channel.stopTyping(true)
@@ -68,29 +74,7 @@ module.exports = {
                     }
 
                     let $ = cheerio.load(lesson[dayOfWeek], {xmlMode: false})
-                    let przedmiotSalaTab = $.text().split("     ")
-                    if (przedmiotSalaTab.length < 2)
-                        przedmiotSalaTab = $.text().split("    ")
-                    if (przedmiotSalaTab.length < 2)
-                        przedmiotSalaTab = $.text().split("   ")
-                    if (przedmiotSalaTab.length < 2)
-                        przedmiotSalaTab = $.text().split("  ")
-                    if (przedmiotSalaTab.length < 2) {
-                        let tab, tab2 = [], tab3 = []
-                        tab = $.text().split(" ")
-                        for (let i = 0; i < tab.length - 1; i++) {
-                            tab2.push(tab[i])
-                        }
-                        let x = tab2.join(" ")
-                        tab3.push(x)
-                        tab3.push(tab[tab.length - 1])
-                        przedmiotSalaTab = tab3
-                    }
-                    let salaPrzedmiotTab = przedmiotSalaTab.reverse()
-                    if (salaPrzedmiotTab.join("") !== '') {
-                        let salaPrzedmiotFormattedText = salaPrzedmiotTab.join("\t")
-                        timetableText += salaPrzedmiotFormattedText + '\n'
-                    }
+                    timetableText += $.text() + "\n"
                 }
             })
             return `\`\`\`${timetableText}\`\`\``

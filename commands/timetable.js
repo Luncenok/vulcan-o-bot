@@ -25,7 +25,6 @@ module.exports = {
                 return uonet.getTimetable(loginInfo, date, loginProgressMessage)
             }).then(json => {
                 let dayText;
-                console.log(json)
                 if (json !== undefined) {
                     let day = getWeekDay(args[0], json["Rows"])
                     if (json["Headers"][day] !== undefined)

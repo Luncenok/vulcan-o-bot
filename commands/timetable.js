@@ -83,14 +83,14 @@ module.exports = {
             let day = date;
             if (weekDays.indexOf(arg) !== -1) {
                 return weekDays.indexOf(arg)
-            } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
-                return parseInt(arg)
             } else if (gotDate) {
                 if (day.getDay() === 0) {
                     return 7
                 } else {
                     return day.getDay()
                 }
+            } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
+                return parseInt(arg)
             } else {
                 let last
                 for (let lesson of json.reverse()) {

@@ -316,7 +316,9 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
     try {
 
         let url = `${baseUrl}/PlanZajec.mvc/Get`
-        let data = date.toISOString().slice(0, 11) + '00:00:00'
+        let data = new Date(date)
+        data.setDate(data.getDate() - data.getDay() + 1)
+        data = data.toISOString().slice(0, 11) + '00:00:00'
         const body = {
             'data': data
         }
@@ -555,6 +557,7 @@ async function fetchData(url, body, headers, message) {
         .then(res => res.text())
         .then(res => {
             let resJson = JSON.parse(res)
+            if (!(resJson["success"])) throw resJson["feedback"]["Message"]
             json = resJson["data"]
         })
         .catch(error => {

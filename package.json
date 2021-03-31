@@ -1,6 +1,6 @@
 {
   "name": "vulcan-o-bot",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "main": "bot.js",
   "license": "MIT",
   "dependencies": {

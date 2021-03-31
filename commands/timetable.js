@@ -2,7 +2,7 @@ module.exports = {
     name: "timetable",
     description: "Pokazuje plan lekcji wybranego dnia lub na cały tydzień (domyślnie dzisiejszy plan)",
     aliases: ['plan', 'planlekcji'],
-    usage: ['timetable', 'timetable 12-01-2021', 'timetable 3.3.2020', 'timetable poniedziałek', 'timetable 4'],
+    usage: ['timetable', 'timetable 12-01-2021', 'timetable 3/3/2020', 'timetable 29.3.21', 'timetable poniedziałek', 'timetable 4'],
     category: 'vulcan',
     async execute(client, message, args) {
         const uonet = require('../uonet')
@@ -11,7 +11,7 @@ module.exports = {
         message.channel.startTyping()
 
         const weekDays = ["", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
-        const dateRegex = /(?:(?:31([\/\-.])(?:0?[13578]|1[02]))\1|(?:(?:29|30)([\/\-.])(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29([\/\-.])0?2\3(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))$|^(?:0?[1-9]|1\d|2[0-8])([\/\-.])(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})/
+        const dateRegex = /^(?:(?:31([\/\-.])(?:0?[13578]|1[02]))\1|(?:(?:29|30)([\/\-.])(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29([\/\-.])0?2\3(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))$|^(?:0?[1-9]|1\d|2[0-8])([\/\-.])(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/
         let loginProgressMessage;
         await message.channel.send("Logowanie... 0%").then(lpMessage => {
             loginProgressMessage = lpMessage
@@ -28,7 +28,7 @@ module.exports = {
                 if (json !== undefined) {
                     let day = getWeekDay(args[0], json["Rows"])
                     if (json["Headers"][day] !== undefined)
-                        dayText = json["Headers"][1]["Text"].split("<br />").join(" ");
+                        dayText = json["Headers"][day]["Text"].split("<br />").join(" ");
                     else dayText = weekDays[day];
                     message.channel.stopTyping(true)
                     loginProgressMessage.edit("Plan na dzień: " + dayText + "\n" + getTimetableFormattedText(json, day))
@@ -111,7 +111,7 @@ module.exports = {
         function getDateFromFormat(arg) {
             let day = new Date();
             if (dateRegex.test(arg)) {
-                day.setFullYear(Number(args[0].split(/[.\-\/]/)[2]), Number(args[0].split(/[.\-\/]/)[1]) - 1, Number(args[0].split(/[.\-\/]/)[0]))
+                day.setFullYear(Number((args[0].split(/[.\-\/]/)[2]).length === 2?`20${(args[0].split(/[.\-\/]/)[2])}`:(args[0].split(/[.\-\/]/)[2])), Number(args[0].split(/[.\-\/]/)[1]) - 1, Number(args[0].split(/[.\-\/]/)[0]))
                 gotDate = true
             }
             return day;

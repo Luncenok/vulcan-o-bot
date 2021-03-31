@@ -316,7 +316,9 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
     try {
 
         let url = `${baseUrl}/PlanZajec.mvc/Get`
-        let data = date.toISOString().slice(0, 11) + '00:00:00'
+        let data = new Date(date)
+        data.setDate(data.getDate() - data.getDay() + 1)
+        data = data.toISOString().slice(0, 11) + '00:00:00'
         const body = {
             'data': data
         }

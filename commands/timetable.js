@@ -27,6 +27,7 @@ module.exports = {
                 let dayText;
                 if (json !== undefined) {
                     let day = getWeekDay(args[0], json["Rows"])
+                    date.setDate(date.getDate() - date.getDay() + day)
                     if (json["Headers"][day] !== undefined)
                         dayText = json["Headers"][day]["Text"].split("<br />").join(" ");
                     else dayText = weekDays[day];
@@ -60,11 +61,11 @@ module.exports = {
                 if (lesson[dayOfWeek] !== "" && lesson[dayOfWeek] !== undefined) {
                     let hoursString = lesson[0]
                     let hoursSplitted = hoursString.split("<br />")
-                    let date = new Date()
-                    let now = date.getHours() * 60 + date.getMinutes()
+                    let today = new Date()
+                    let now = today.getHours() * 60 + today.getMinutes()
                     let start = parseInt(hoursSplitted[1].split(':')[0]) * 60 + parseInt(hoursSplitted[1].split(':')[1])
                     let end = parseInt(hoursSplitted[2].split(':')[0]) * 60 + parseInt(hoursSplitted[2].split(':')[1])
-                    if (start <= now && now <= end && `${date.toISOString().split("T")[0]} 00:00:00` === jsonMain["Data"]) {
+                    if (start <= now && now <= end && `${date.getFullYear()}${date.getMonth()}${date.getDate()}` === `${today.getFullYear()}${today.getMonth()}${today.getDate()}`) {
                         hoursString = hoursSplitted.join(" ~> ")
                         timetableText += `${hoursString} ~> `
                     } else {
@@ -89,7 +90,7 @@ module.exports = {
                 } else {
                     return day.getDay()
                 }
-            } else if (parseInt(arg) >= 1 && parseInt(arg) <= 5) {
+            } else if (parseInt(arg) >= 1 && parseInt(arg) <= 7) {
                 return parseInt(arg)
             } else {
                 let last

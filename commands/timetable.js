@@ -115,6 +115,7 @@ module.exports = {
                 day.setFullYear(Number((args[0].split(/[.\-\/]/)[2]).length === 2?`20${(args[0].split(/[.\-\/]/)[2])}`:(args[0].split(/[.\-\/]/)[2])), Number(args[0].split(/[.\-\/]/)[1]) - 1, Number(args[0].split(/[.\-\/]/)[0]))
                 gotDate = true
             }
+            console.log("fhduifjdk")
             return day;
         }
     }

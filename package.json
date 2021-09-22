@@ -9,7 +9,8 @@
     "discord.js": "^12.5.1",
     "dotenv": "^10.0.0",
     "keyv": "^4.0.3",
-    "node-fetch": "^3.0.0"
+    "node-fetch": "^3.0.0",
+    "yarn": "^1.22.11"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

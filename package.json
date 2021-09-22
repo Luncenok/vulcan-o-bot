@@ -4,7 +4,7 @@
   "main": "bot.js",
   "license": "MIT",
   "dependencies": {
-    "@keyv/mongo": "^1.1.0",
+    "@keyv/mongo": "github:darovic/keyv-mongo",
     "cheerio": "^1.0.0-rc.10",
     "discord.js": "^12.5.1",
     "dotenv": "^10.0.0",

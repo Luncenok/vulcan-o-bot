@@ -1,7 +1,7 @@
-const {Client, Intents} = require('discord.js');
+const Discord = require('discord.js');
 require('dotenv').config();
 
-const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
+const client = new Discord.Client();
 const config = {
   "prefix": process.env.PREFIX,
   "ownerId1": process.env.OWNER1,

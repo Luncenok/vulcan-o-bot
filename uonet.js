@@ -252,7 +252,7 @@ module.exports.loginLogOn = async (loginMessage, loginProgressMessage) => {
         return [permissions, cookies, symbol, antiForgeryToken, appGuid, version, baseUrl, rokSzkolny, okresId]
     } catch (error) {
         console.log(`!error! login error: ${error}`)
-        loginProgressMessage.channel.stopTyping(true)
+        
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
     }
 }
@@ -299,7 +299,7 @@ module.exports.getLuckyNumber = async ([permissions, cookies, symbol, baseUrl], 
         return luckyNumberText
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping(true)
+        
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
     }
 }
@@ -338,7 +338,7 @@ module.exports.getTimetable = async ([permissions, cookies, symbol, antiForgeryT
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping(true)
+        
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -379,7 +379,7 @@ module.exports.getExams = async ([permissions, cookies, symbol, antiForgeryToken
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping(true)
+        
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -420,7 +420,7 @@ module.exports.getHomework = async ([permissions, cookies, symbol, antiForgeryTo
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping(true)
+        
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -457,7 +457,7 @@ module.exports.getGrades = async ([permissions, cookies, symbol, antiForgeryToke
         return json["Oceny"];
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping(true)
+        
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -494,7 +494,7 @@ module.exports.getAttendance = async ([permissions, cookies, symbol, antiForgery
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping(true)
+        
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -530,7 +530,7 @@ module.exports.getGradesStatistics = async ([permissions, cookies, symbol, antiF
         return json
     } catch (error) {
         console.log(`!error! baseUrl: ${baseUrl} error: ${error}`)
-        loginProgressMessage.channel.stopTyping(true)
+        
         await loginProgressMessage.channel.send(`\`\`\`\n${error}\`\`\``)
         return undefined
     }
@@ -561,7 +561,7 @@ async function fetchData(url, body, headers, message) {
             json = resJson["data"]
         })
         .catch(error => {
-            message.channel.stopTyping(true)
+            
             message.edit(error)
             throw error
         })

@@ -3,6 +3,9 @@
   "version": "0.3.0",
   "main": "bot.js",
   "license": "MIT",
+  "engines": {
+    "node": "16.x"
+  },
   "dependencies": {
     "@keyv/mongo": "github:darovic/keyv-mongo",
     "cheerio": "^1.0.0-rc.10",

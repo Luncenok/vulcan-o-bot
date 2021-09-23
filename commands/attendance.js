@@ -47,7 +47,7 @@ module.exports = {
                 ));
             })
         } else {
-            loginProgressMessage.channel.stopTyping(true)
+            
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

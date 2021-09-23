@@ -12,7 +12,7 @@ module.exports = {
         await message.channel.send("Logowanie... 0%").then(lpMessage => {
             loginProgressMessage = lpMessage
         })
-        message.channel.startTyping()
+        
 
         let homework = [], workDataText, workSubjectText, workDescriptionText, workTeacherText
 
@@ -34,7 +34,7 @@ module.exports = {
                         })
                     })
                 })
-                message.channel.stopTyping(true)
+                
                 let description = "Zadania domowe na najbliższy tydzień: "
                 if (homework.length <= 0) description += "Brak!"
                 loginProgressMessage.edit(utils.generateEmbed(
@@ -44,7 +44,7 @@ module.exports = {
                 ))
             })
         } else {
-            message.channel.stopTyping(true)
+            
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

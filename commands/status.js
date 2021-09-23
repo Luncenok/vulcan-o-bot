@@ -8,7 +8,7 @@ module.exports = {
         const fetch = require('node-fetch')
         const cheerio = require('cheerio')
         const utils = require('../utils')
-        message.channel.startTyping()
+
         let
             isCufsTitleCorrect = false,
             isCufsCodeCorrect = false,
@@ -84,9 +84,9 @@ module.exports = {
         )
 
         if (cufsWorking && uczenWorking)
-            embed.embed.color = "#9cfc9c"
-        else embed.embed.color = "#e73f48"
-        message.channel.stopTyping(true)
-        await message.channel.send(embed)
+            embed.embeds[0].color = "#9cfc9c"
+        else embed.embeds[0].color = "#e73f48"
+
+        await message.channel.send(embed);
     }
 }

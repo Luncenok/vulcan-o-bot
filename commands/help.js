@@ -66,7 +66,7 @@ module.exports = {
                 ]
             )
 
-            await message.channel.send({embeds: [helpEmbed]});
+            await message.channel.send(helpEmbed);
         }
     }
 }

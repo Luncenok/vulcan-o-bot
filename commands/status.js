@@ -87,6 +87,6 @@ module.exports = {
             embed.embed.color = "#9cfc9c"
         else embed.embed.color = "#e73f48"
 
-        await message.channel.send({embeds: [embed]});
+        await message.channel.send(embed);
     }
 }

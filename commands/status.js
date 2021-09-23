@@ -8,7 +8,7 @@ module.exports = {
         const fetch = require('node-fetch')
         const cheerio = require('cheerio')
         const utils = require('../utils')
-        
+
         let
             isCufsTitleCorrect = false,
             isCufsCodeCorrect = false,
@@ -86,7 +86,7 @@ module.exports = {
         if (cufsWorking && uczenWorking)
             embed.embed.color = "#9cfc9c"
         else embed.embed.color = "#e73f48"
-        
-        await message.channel.send(embed)
+
+        await message.channel.send({embeds: [embed]});
     }
 }

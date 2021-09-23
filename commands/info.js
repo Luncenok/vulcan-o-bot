@@ -16,8 +16,8 @@ module.exports = {
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = Math.floor(totalSeconds % 60);
         let uptime = `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`
-        
-        await message.channel.send(utils.generateEmbed(
+
+        await message.channel.send({embeds: utils.generateEmbed(
             "Informacje o bocie",
             "",
             [{
@@ -41,7 +41,7 @@ module.exports = {
                 name: "Hosting",
                 value: `${process.env.HOST}`
             }
-            ]))
-        
+            ])})
+
     }
 }

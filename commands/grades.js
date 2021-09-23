@@ -12,7 +12,7 @@ module.exports = {
         await message.channel.send("Logowanie... 0%").then(lpMessage => {
             loginProgressMessage = lpMessage
         })
-        message.channel.startTyping()
+        
 
         const loginMessage = await utils.getLoginMessageOrUndefined(message.author)
         if (loginMessage) {
@@ -124,7 +124,7 @@ module.exports = {
                         fieldsBez
                     )
                 }
-                message.channel.stopTyping(true)
+                
                 if (message.channel.type === 'dm') loginProgressMessage.edit(embedZOcenami)
                 else {
                     loginProgressMessage.edit(embedBezOcen)
@@ -150,7 +150,7 @@ module.exports = {
                 }
             })
         } else {
-            message.channel.stopTyping(true)
+            
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

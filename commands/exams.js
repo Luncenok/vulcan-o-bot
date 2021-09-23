@@ -12,7 +12,7 @@ module.exports = {
         await message.channel.send("Logowanie... 0%").then(lpMessage => {
             loginProgressMessage = lpMessage
         })
-        message.channel.startTyping()
+        
 
         let exams = [], examDataText, examSubjectText, examDescriptionText, examTeacherText, examTypeText
         const examTypes = [
@@ -45,7 +45,7 @@ module.exports = {
                         })
                     })
                 }
-                message.channel.stopTyping(true)
+                
                 loginProgressMessage.edit(utils.generateEmbed(
                     "Sprawdziany",
                     "Sprawdziany, kartkówki i prace klasowe na najbliższe 4 tygodnie",
@@ -53,7 +53,7 @@ module.exports = {
                 ));
             })
         } else {
-            message.channel.stopTyping(true)
+            
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

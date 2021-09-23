@@ -8,7 +8,7 @@ module.exports = {
         const uonet = require('../uonet')
         const utils = require('../utils')
         const cheerio = require("cheerio")
-        message.channel.startTyping()
+        
 
         const weekDays = ["", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
         const dateRegex = /^(?:(?:31([\/\-.])(?:0?[13578]|1[02]))\1|(?:(?:29|30)([\/\-.])(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29([\/\-.])0?2\3(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))$|^(?:0?[1-9]|1\d|2[0-8])([\/\-.])(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/
@@ -31,15 +31,15 @@ module.exports = {
                     if (json["Headers"][day] !== undefined)
                         dayText = json["Headers"][day]["Text"].split("<br />").join(" ");
                     else dayText = weekDays[day];
-                    message.channel.stopTyping(true)
+                    
                     loginProgressMessage.edit("Plan na dzień: " + dayText + "\n" + getTimetableFormattedText(json, day))
                 } else {
-                    message.channel.stopTyping(true)
+                    
                     loginProgressMessage.edit("\`\`\`Nie wykryto planu lekcji\`\`\`")
                 }
             })
         } else {
-            loginProgressMessage.channel.stopTyping(true)
+            
             await loginProgressMessage.edit("Aby użyć tej komendy najpierw musisz się zalogować w wiadomości **prywatnej** do mnie. Po więcej informacji użyj komendy `help`")
             await utils.removeFromDatabase(message.author.id)
         }

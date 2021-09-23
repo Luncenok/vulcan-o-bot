@@ -9,7 +9,7 @@ module.exports = {
         let commands = client.commands
         let comsOtherNames = []
         let comsVulcanNames = []
-        message.channel.startTyping()
+        
         commands.forEach(command => {
             switch (command.category) { // tu kiedyś (hmm) będzie inaczej. Bedzie automatyczny system tworzenia kategorii, że jak stworzysz se nową komdę kategorii "Moderacja", czy coś, to nie będziesz musiał nic w helpie zmieniać
                 case "other":
@@ -30,7 +30,7 @@ module.exports = {
                 || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 
         if (!(helpCommand)&&(args[0])) {
-            message.channel.stopTyping(true)
+            
             await message.channel.send(`Nieznana komenda \`${args[0]}\`.\nWpisz \`${client.config.prefix}help\`, by otrzymać listę komend i przydatne linki`)
         } else {
             const helpEmbed = (!(helpCommand)) ? utils.generateEmbed(
@@ -65,7 +65,7 @@ module.exports = {
                     }
                 ]
             )
-            message.channel.stopTyping(true)
+            
             await message.channel.send(helpEmbed);
         }
     }

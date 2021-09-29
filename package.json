@@ -13,7 +13,7 @@
     "dotenv": "^10.0.0",
     "keyv": "^4.0.3",
     "node-fetch": "^2.6.1",
-    "yarn": "^1.22.11"
+    "yarn": "^1.22.13"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
